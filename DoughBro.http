@@ -1,0 +1,6 @@
+@DoughBro_HostAddress = http://localhost:5141
+
+GET {{DoughBro_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
