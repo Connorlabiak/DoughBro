@@ -1,13 +1,13 @@
 ﻿namespace DoughBro.Models
 {
-    public record class TransactionDbModel(string Id, string UserId, string Name, string Date, double Amount, string? Description, Category category)
+    public class TransactionDbModel()
     {
-        string Id { get; set; }
-        string UserId { get; set; }
-        string Name { get; set; }
-        string Date { get; set; }
-        double Amount { get; set; }
-        string? Description { get; set; }
-        Category category { get; set; }
+        public string Id { get; set; }
+        public string UserId { get; set; }
+        public string Name { get; set; }
+        public string Date { get; set; }
+        public double Amount { get; set; }
+        public string? Description { get; set; }
+        public string? category { get; set; }
     }
 }
