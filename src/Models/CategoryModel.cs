@@ -1,6 +1,6 @@
 ﻿namespace DoughBro.src.Models
 {
-    public class CategoryDbModel
+    public class CategoryModel
     {
         public string Id { get; set; }
         public string Name { get; set; }
