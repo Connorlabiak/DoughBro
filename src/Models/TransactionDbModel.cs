@@ -1,4 +1,4 @@
-﻿namespace DoughBro.Models
+﻿namespace DoughBro.src.Models
 {
     public class TransactionDbModel()
     {

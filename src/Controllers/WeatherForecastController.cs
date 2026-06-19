@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace DoughBro.Controllers
+namespace DoughBro.src.Controllers
 {
     [ApiController]
     [Route("[controller]")]

@@ -1,4 +1,4 @@
-namespace DoughBro
+namespace DoughBro.src
 {
     public class WeatherForecast
     {
