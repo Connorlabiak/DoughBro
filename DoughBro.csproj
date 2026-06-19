@@ -16,6 +16,7 @@
     <Folder Include="src\Controllers\" />
     <Folder Include="src\Entities\" />
     <Folder Include="src\DTOs\" />
+    <Folder Include="src\Repositories\" />
   </ItemGroup>
 
 </Project>
