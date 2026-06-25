@@ -17,15 +17,15 @@ namespace DoughBro.src.Repositories
 
         public async Task CreateAsync(TransactionModel transactionModel)
         {
-            DocumentReference reference = _db.Collection("Transactions").Document();
-            transactionModel.Id = reference.Id;
-            await reference.SetAsync(transactionModel);
+            DocumentReference document = _db.Collection("Transactions").Document();
+            transactionModel.Id = document.Id;
+            await document.SetAsync(transactionModel);
         }
 
         public async Task<TransactionModel?> GetAsync(string id)
         {
-            DocumentReference reference = _db.Collection("Transactions").Document(id);
-            DocumentSnapshot snapshot = await reference.GetSnapshotAsync();
+            DocumentReference document = _db.Collection("Transactions").Document(id);
+            DocumentSnapshot snapshot = await document.GetSnapshotAsync();
             if (snapshot.Exists)
             {
                 return snapshot.ConvertTo<TransactionModel>();
