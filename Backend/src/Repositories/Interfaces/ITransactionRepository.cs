@@ -4,7 +4,10 @@ namespace DoughBro.src.Repositories.Interfaces
 {
     public interface ITransactionRepository
     {
-        Task CreateAsync(TransactionModel transactionModel);
+        Task<string> CreateAsync(TransactionModel transactionModel);
+
+        Task UpdateCategoryAsync(string transactionId, CategoryModel categoryModel);
+
         Task<TransactionModel?> GetAsync(string id);
     }
 }

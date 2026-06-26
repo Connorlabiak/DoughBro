@@ -1,6 +1,4 @@
-﻿
-
-using DoughBro.src.Models;
+﻿using DoughBro.src.Models;
 using DoughBro.src.Repositories.Interfaces;
 using Google.Cloud.Firestore;
 
@@ -15,11 +13,18 @@ namespace DoughBro.src.Repositories
             _db = dbProvider.GetFirestoreDb();
         }
 
-        public async Task CreateAsync(TransactionModel transactionModel)
+        public async Task<string> CreateAsync(TransactionModel transactionModel)
         {
             DocumentReference document = _db.Collection("Transactions").Document();
             transactionModel.Id = document.Id;
             await document.SetAsync(transactionModel);
+            return document.Id;
+        }
+
+        public async Task UpdateCategoryAsync(string transactionId, CategoryModel categoryModel)
+        {
+            DocumentReference document = _db.Collection("Transaction").Document(transactionId);
+            await document.UpdateAsync("Category", categoryModel.Name);
         }
 
         public async Task<TransactionModel?> GetAsync(string id)

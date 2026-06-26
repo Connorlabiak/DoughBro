@@ -39,5 +39,7 @@ namespace DoughBro.src.Controllers
             }
             return result;
         }
+
+        [HttpPost]
     }
 }
