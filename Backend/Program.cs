@@ -13,10 +13,12 @@ builder.Services.AddOpenApi();
 //Consider using service extensions
 builder.Services.AddSingleton<IDbProvider, DbProvider>();
 
-//Repositories
+// Repositories
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
-//Services
+// Services
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 
 var app = builder.Build();
