@@ -19,7 +19,6 @@
     "erasableSyntaxOnly": true,
 
     /* Path Aliases */
-    "baseUrl": ".",
     "paths": {
       "@/*": [ "src/*" ]
     }
