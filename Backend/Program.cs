@@ -3,6 +3,7 @@ using DoughBro.src.Repositories;
 using DoughBro.src.Repositories.Interfaces;
 using DoughBro.src.Services.Interfaces;
 using DoughBro.src.Services;
+using DoughBro.src.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+builder.Services.AddCustomCors(builder.Configuration);
+builder.Services.AddFirebaseAuthentication(builder.Configuration);
+
 //Consider using service extensions
 builder.Services.AddSingleton<IDbProvider, DbProvider>();
 

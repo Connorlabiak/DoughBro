@@ -1,6 +1,6 @@
-﻿namespace DoughBro.src
+﻿namespace DoughBro.src.Extensions
 {
-    public static class Extensions
+    public static class StringExtensions
     {
         public static string FirstCharToUpperOnly(this string input) =>
         input switch
