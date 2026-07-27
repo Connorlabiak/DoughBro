@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import SignIn from "@/components/Login";
 import { AuthProvider } from "@/context/AuthContext";
 import { ProtectedRoute, PublicOnlyRoute } from "@/components/RouteGuards";
@@ -25,9 +25,9 @@ export default function App() {
                         <Route path="/dashboard" element={<Dashboard />} />
                     </Route>
 
-                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
-                    <Route path="*" element={<Dashboard />} />
+                    <Route path="*" element={<Navigate to="/dashboard" replace />} />
                 </Routes>
             </BrowserRouter>
         </AuthProvider>
