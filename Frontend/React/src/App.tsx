@@ -1,5 +1,8 @@
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import SignIn from "@/components/Login";
+import { AuthProvider } from "@/context/AuthContext";
+import { ProtectedRoute, PublicOnlyRoute } from "@/components/RouteGuards";
+import Dashboard from "@/components/Dashboard";
 
 function LoginPage() {
     const navigate = useNavigate();
@@ -11,11 +14,18 @@ function LoginPage() {
 
 export default function App() {
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route path="/login" element={<LoginPage />} />
-                {/* Your other routes */}
-            </Routes>
-        </BrowserRouter>
+        <AuthProvider>
+            <BrowserRouter>
+                <Routes>
+                    <Route element={<PublicOnlyRoute />}> 
+                        <Route path="/login" element={<LoginPage />} />
+                    </Route>
+
+                    <Route element={<ProtectedRoute />}>
+                        <Route path="/dashboard" element={<Dashboard />} />
+                    </Route>
+                </Routes>
+            </BrowserRouter>
+        </AuthProvider>
     );
 }
