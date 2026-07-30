@@ -4,6 +4,7 @@ using DoughBro.src.Repositories.Interfaces;
 using DoughBro.src.Services.Interfaces;
 using Google.Cloud.Firestore;
 using Grpc.Core;
+using System.Text.Json;
 
 namespace DoughBro.src.Services
 {
@@ -12,65 +13,63 @@ namespace DoughBro.src.Services
         private readonly FirestoreDb _db;
         private readonly ITransactionRepository _transactionRepository;
         private readonly ICategoryService _categoryService;
+        private readonly IPlaidService _plaidService;
 
-        public TransactionService(IDbProvider dbProvider, ITransactionRepository transactionRepository, ICategoryService categoryService)
+        public TransactionService(IDbProvider dbProvider, ITransactionRepository transactionRepository, ICategoryService categoryService, IPlaidService plaidService)
         {
             _db = dbProvider.GetFirestoreDb();
             _transactionRepository = transactionRepository;
             _categoryService = categoryService;
+            _plaidService = plaidService;
+        }
+
+        public async Task ImportFromPlaid(string userId)
+        {
+            JsonElement transactions = await _plaidService.FetchTransactionsAsync(userId);
+            List<TransactionModel> transactionModels = new List<TransactionModel>();
+            foreach (JsonElement item in transactions.GetProperty("added").EnumerateArray())
+            {
+                string txId = item.GetProperty("transaction_id").GetString()!;
+                decimal amount = item.GetProperty("amount").GetDecimal();
+                string date = item.GetProperty("date").GetString()!;
+                string name = item.GetProperty("name").GetString()!;
+                string category = "unsorted";
+                bool isPending = item.GetProperty("pending").GetBoolean();
+                transactionModels.Add(new TransactionModel
+                {
+                    PlaidTransactionId = txId,
+                    UserId = userId,
+                    Name = name,
+                    Date = date,
+                    Amount = amount,
+                    IsPending = isPending,
+                });
+            }
+            if (transactionModels.Count > 0)
+            {
+                await _transactionRepository.SaveBatch(transactionModels, userId);
+            }
+            
         }
 
         public async Task<TransactionModel> CreateAsync(TransactionDto transactionDto)
         {
-            TransactionModel model = new TransactionModel
-            {
-                UserId = transactionDto.UserId,
-                Name = transactionDto.Name,
-                Date = transactionDto.Date,
-                Amount = transactionDto.Amount,
-                Description = transactionDto.Description,
-                category = transactionDto.category
-            };
-            string id = await _transactionRepository.CreateAsync(model);
-            model.Id = id;
-            return model;
-            
+           throw new NotImplementedException();
         }
 
         public async Task updateTransactionCategory(string transactionId, string category)
         {
-            CategoryModel? categoryModel = await _categoryService.FindAsync(category);
-            if (categoryModel is null)
-            {
-                throw new MissingMemberException($"Category: {category} does not exist.");
-            }
-            try
-            {
-                await _transactionRepository.UpdateCategoryAsync(transactionId, categoryModel);
-            } catch (RpcException ex) when (ex.StatusCode == StatusCode.NotFound)
-            {
-                throw new MissingMemberException($"Transaction with Id: {transactionId} not found.");
-            }
-
+            throw new NotImplementedException();
         }
 
         public async Task<TransactionDto?> GetAsync(string id)
         {
-            TransactionModel? model = await _transactionRepository.GetAsync(id);
-            if (model == null)
-            {
-                return null;
-            }
+            throw new NotImplementedException();
+        }
 
-            return new TransactionDto
-            {
-                UserId = model.UserId,
-                Name = model.Name,
-                Date = model.Date,
-                Amount = model.Amount,
-                Description = model.Description,
-                category = model.category
-            };
+        public Task SaveBatch(JsonElement transactions, string userId, string transactionId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

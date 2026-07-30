@@ -9,21 +9,27 @@ namespace DoughBro.src.Models
         public string? Id { get; set; }
 
         [FirestoreProperty]
-        public string UserId { get; set; } = string.Empty;
+        public string? PlaidTransactionId { get; set; }
 
         [FirestoreProperty]
-        public string Name { get; set; } = string.Empty;
+        public required string UserId { get; set; }
 
         [FirestoreProperty]
-        public string Date { get; set; } = string.Empty;
+        public required string Name { get; set; }
 
         [FirestoreProperty]
-        public double Amount { get; set; }
+        public required string Date { get; set; }
+
+        [FirestoreProperty]
+        public required decimal Amount { get; set; }
 
         [FirestoreProperty]
         public string? Description { get; set; }
 
         [FirestoreProperty]
-        public string? category { get; set; }
+        public string? Category { get; set; }
+
+        [FirestoreProperty]
+        public required bool IsPending { get; set; }
     }
 }

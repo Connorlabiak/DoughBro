@@ -13,14 +13,26 @@ namespace DoughBro.src.Repositories
             _db = dbProvider.GetFirestoreDb();
         }
 
-        public async Task<string> CreateAsync(TransactionModel transactionModel)
+        public async Task SaveBatch(IEnumerable<TransactionModel> transactions, string userId)
         {
-            DocumentReference document = _db.Collection("Transactions").Document();
-            transactionModel.Id = document.Id;
-            await document.SetAsync(transactionModel);
-            return document.Id;
+            const int maxFirestoreBatchSize = 500;
+            var chunks = transactions.Chunk(maxFirestoreBatchSize);
+
+            foreach (var chunk in chunks)
+            {
+                WriteBatch batch = _db.StartBatch();
+
+                foreach (var transaction in chunk)
+                {
+                    DocumentReference docRef = _db.Collection("users").Document(userId).Collection("transactions").Document();
+                    transaction.Id = docRef.Id;
+                    batch.Set(docRef, transaction);
+                }
+                await batch.CommitAsync();
+            }
         }
 
+        /*
         public async Task UpdateCategoryAsync(string transactionId, CategoryModel categoryModel)
         {
             DocumentReference document = _db.Collection("Transaction").Document(transactionId);
@@ -37,5 +49,6 @@ namespace DoughBro.src.Repositories
             }
             return null;
         }
+        */
     }
 }

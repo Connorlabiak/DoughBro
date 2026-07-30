@@ -11,8 +11,12 @@ namespace DoughBro.src.Controllers
         [HttpGet]
         public IActionResult GetProfile()
         {
-            var firebaseUid = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+            string? firebaseUid = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
                               ?? User.FindFirst("sub")?.Value;
+            if (firebaseUid is null)
+            {
+                return Unauthorized("User ID not found in claims.");
+            }
 
             return Ok(new { Message = "Authenticated!", UserId = firebaseUid });
         }

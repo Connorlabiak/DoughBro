@@ -16,14 +16,21 @@ builder.Services.AddFirebaseAuthentication(builder.Configuration);
 
 //Consider using service extensions
 builder.Services.AddSingleton<IDbProvider, DbProvider>();
-
+builder.Services.AddHttpClient("PlaidHttpClient", client =>
+{
+    var env = builder.Configuration["Plaid:Environment"] ?? "sandbox";
+    client.BaseAddress = new Uri($"https://{env}.plaid.com");
+});
 // Repositories
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 // Services
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IPlaidService, PlaidService>();
 
 var app = builder.Build();
 
@@ -33,8 +40,13 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseRouting();
+
+app.UseCors("AllowFrontend");
+
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
