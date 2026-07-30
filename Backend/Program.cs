@@ -40,11 +40,9 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-app.UseRouting();
-
-app.UseCors("AllowFrontend");
-
 app.UseHttpsRedirection();
+app.UseRouting();
+app.UseCors("AllowFrontend");
 
 app.UseAuthentication();
 app.UseAuthorization();
