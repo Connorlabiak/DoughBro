@@ -1,4 +1,5 @@
-﻿using DoughBro.src.Services.Interfaces;
+﻿using DoughBro.src.Exceptions;
+using DoughBro.src.Services.Interfaces;
 using System.Text.Json;
 
 namespace DoughBro.src.Services;
@@ -65,13 +66,14 @@ public class PlaidService : IPlaidService
             ItemId = root.GetProperty("item_id").GetString()!,
             Token = root.GetProperty("access_token").GetString()!,
             UserId = userId,
-            InstitutionName = institutionName
+            InstitutionName = institutionName,
+            CreatedAt = DateTime.UtcNow.ToString()
         });
 
         return root.GetProperty("item_id").GetString()!;
     }
 
-    public async Task<JsonElement> FetchTransactionsAsync(string accessToken, string? cursor = null)
+    public async Task<JsonElement?> FetchTransactionsAsync(string accessToken, string? cursor = null)
     {
         HttpClient _httpClient = _httpClientFactory.CreateClient("PlaidHttpClient");
 
@@ -80,12 +82,28 @@ public class PlaidService : IPlaidService
             client_id = _config["Plaid:ClientId"],
             secret = _config["Plaid:Secret"],
             access_token = accessToken,
-            cursor = cursor,
-            count = 100
+            cursor = string.IsNullOrEmpty(cursor) ? null : cursor,
+            count = 490
         };
 
         var response = await _httpClient.PostAsJsonAsync("/transactions/sync", payload);
-        response.EnsureSuccessStatusCode();
+        if (!response.IsSuccessStatusCode)
+        {
+            try
+            {
+                var errorJson = await response.Content.ReadFromJsonAsync<JsonElement>();
+
+                string errorType = errorJson.GetProperty("error_type").GetString() ?? "UNKNOWN";
+                string errorCode = errorJson.GetProperty("error_code").GetString() ?? "UNKNOWN";
+                string errorMessage = errorJson.GetProperty("error_message").GetString() ?? "An unmapped error occurred.";
+
+                throw new PlaidApiException(errorType, errorCode, errorMessage);
+            }
+            catch (JsonException)
+            {
+                throw new PlaidApiException("INTERNAL", "HTTP_FAILURE", $"Plaid returned raw network status: {response.StatusCode}");
+            }
+        }
 
         return await response.Content.ReadFromJsonAsync<JsonElement>();
     }

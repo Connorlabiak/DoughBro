@@ -1,4 +1,5 @@
-﻿using DoughBro.src.Models;
+﻿using DoughBro.src.Database;
+using DoughBro.src.Models;
 using DoughBro.src.Repositories.Interfaces;
 using Google.Cloud.Firestore;
 using System.Data;

@@ -16,6 +16,14 @@ namespace DoughBro.src.Repositories.Interfaces
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        Task<PlaidAccessTokenModel?> FetchPlaidAccessToken(string userId);
+        Task<IEnumerable<PlaidAccessTokenModel>?> FetchPlaidAccessTokens(string userId);
+
+        /// <summary>
+        /// Updates the Plaid cursor for a given access token in Firestore.
+        /// </summary>
+        /// <param name="token">The targeted token</param>
+        /// <param name="currentCursor">The most recent cursor</param>
+        /// <returns></returns>
+        public Task UpdatePlaidCursor(PlaidAccessTokenModel token, string currentCursor);
     }
 }

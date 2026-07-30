@@ -1,4 +1,5 @@
-﻿using Google.Cloud.Firestore;
+﻿using DoughBro.src.Database;
+using Google.Cloud.Firestore;
 
 namespace DoughBro.src.Models
 {
@@ -9,7 +10,7 @@ namespace DoughBro.src.Models
         public string? Id { get; set; }
 
         [FirestoreProperty]
-        public string? PlaidTransactionId { get; set; }
+        public required string Origin { get; set; }
 
         [FirestoreProperty]
         public required string UserId { get; set; }
@@ -20,8 +21,11 @@ namespace DoughBro.src.Models
         [FirestoreProperty]
         public required string Date { get; set; }
 
-        [FirestoreProperty]
+        [FirestoreProperty(ConverterType = typeof(FirestoreDecimalConverter))]
         public required decimal Amount { get; set; }
+
+        [FirestoreProperty]
+        public string? MerchantName { get; set; }
 
         [FirestoreProperty]
         public string? Description { get; set; }

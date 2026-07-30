@@ -6,6 +6,6 @@ namespace DoughBro.src.Services.Interfaces
     {
         Task<string> CreateLinkTokenAsync(string userId);
         Task<string> ExchangePublicTokenAsync(string publicToken, string userId, string institutionName);
-        Task<JsonElement> FetchTransactionsAsync(string accessToken, string? cursor = null);
+        Task<JsonElement?> FetchTransactionsAsync(string accessToken, string? cursor = null);
     }
 }

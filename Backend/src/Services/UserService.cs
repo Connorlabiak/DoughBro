@@ -1,6 +1,7 @@
 ﻿using DoughBro.src.Models;
 using DoughBro.src.Repositories.Interfaces;
 using DoughBro.src.Services.Interfaces;
+using Google.Cloud.Firestore;
 
 namespace DoughBro.src.Services
 {
@@ -13,14 +14,19 @@ namespace DoughBro.src.Services
             _userRepository = userRepository;
         }
 
-        public Task<string?> FetchPlaidAccessToken(string userId)
+        public async Task<IEnumerable<PlaidAccessTokenModel>?> FetchPlaidAccessTokens(string userId)
         {
-            throw new NotImplementedException();
+            return await _userRepository.FetchPlaidAccessTokens(userId);
         }
 
         public Task SavePlaidAccessToken(PlaidAccessTokenModel token)
         {
             return _userRepository.SavePlaidAccessToken(token);
+        }
+
+        public Task UpdatePlaidCursor(PlaidAccessTokenModel token, string currentCursor)
+        {
+            return _userRepository.UpdatePlaidCursor(token, currentCursor);
         }
     }
 }

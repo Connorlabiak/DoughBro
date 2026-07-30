@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebase/firebase";
 import { PlaidLinkButton } from "@/components/PlaidLinkButton";
+import { SyncTransactionsButton } from "./SyncTransactionsButton";
 
 export default function Dashboard() {
     return (
@@ -10,6 +11,7 @@ export default function Dashboard() {
             <h1>{"Dashboard! "}</h1>
             <Button onClick={() => logout()}>Logout</Button>
             <PlaidLinkButton></PlaidLinkButton>
+            <SyncTransactionsButton></SyncTransactionsButton>
         </div>
     );
 }

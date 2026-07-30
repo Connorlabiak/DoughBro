@@ -2,11 +2,14 @@
 using DoughBro.src.Services;
 using DoughBro.src.Services.Interfaces;
 using DoughBro.src.DTOs;
+using Microsoft.AspNetCore.Authorization;
+using DoughBro.src.Extensions;
 
 namespace DoughBro.src.Controllers
 {
     [ApiController]
-    [Route("transactions")]
+    [Route("api/transactions")]
+    [Authorize]
     public class TransactionController : ControllerBase
     {
         private readonly ITransactionService _transactionService;
@@ -15,6 +18,19 @@ namespace DoughBro.src.Controllers
         {
             _transactionService = transactionService;
         }
+
+        [HttpGet("sync")]
+        public async Task<ActionResult> SyncTransactionsAsync()
+        {
+            string? userId = User.GetUserId();
+            if (userId is null)
+            {
+                return Unauthorized("User ID not found in claims.");
+            }
+            await _transactionService.SyncAllUserAccounts(userId);
+            return Ok(new { message = "Transactions synced successfully" });
+        }
+
 
         [HttpPost]
         [Route("create")]

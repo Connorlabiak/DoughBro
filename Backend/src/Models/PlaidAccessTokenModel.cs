@@ -16,5 +16,11 @@ namespace DoughBro.src.Models
 
         [FirestoreProperty]
         public required string InstitutionName { get; set; }
+
+        [FirestoreProperty]
+        public required string CreatedAt { get; set; }
+
+        [FirestoreProperty]
+        public string? NextCursor { get; set; }
     }
 }

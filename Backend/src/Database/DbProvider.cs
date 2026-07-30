@@ -2,7 +2,7 @@
 using Google.Cloud.Firestore;
 using System.Text.Json;
 
-namespace DoughBro.src
+namespace DoughBro.src.Database
 {
     public interface IDbProvider
     {

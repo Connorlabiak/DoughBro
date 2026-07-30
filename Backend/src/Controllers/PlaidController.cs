@@ -8,7 +8,7 @@ using System.Text.Json;
 namespace DoughBro.Backend.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/plaid")]
 [Authorize]
 public class PlaidController : ControllerBase
 {
@@ -42,11 +42,6 @@ public class PlaidController : ControllerBase
             return Unauthorized("User ID not found in claims.");
         }
         var itemId = await _plaidService.ExchangePublicTokenAsync(request.PublicToken, userId, request.InstitutionName);
-
-        // Sync initial transactions immediately
-        //var syncResult = await _plaidService.FetchTransactionsAsync(accessToken);
-        //await SaveTransactionsToFirestore(userId, itemId, syncResult);
-
         return Ok(new { success = true, itemId });
     }
 
