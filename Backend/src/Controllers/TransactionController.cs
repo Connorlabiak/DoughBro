@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using DoughBro.src.Services;
 using DoughBro.src.Services.Interfaces;
 using DoughBro.src.DTOs;
 using Microsoft.AspNetCore.Authorization;
@@ -19,7 +18,7 @@ namespace DoughBro.src.Controllers
             _transactionService = transactionService;
         }
 
-        [HttpGet("sync")]
+        [HttpPost("sync")]
         public async Task<ActionResult> SyncTransactionsAsync()
         {
             string? userId = User.GetUserId();
@@ -31,29 +30,26 @@ namespace DoughBro.src.Controllers
             return Ok(new { message = "Transactions synced successfully" });
         }
 
-
-        [HttpPost]
-        [Route("create")]
-        public async Task<ActionResult> CreateAsync([FromBody] TransactionDto transactionDto)
+        [HttpGet("get")]
+        public async Task<IActionResult> GetTransactions([FromQuery] int limit = 50)
         {
-            var result = await _transactionService.CreateAsync(transactionDto);
-            if (result.Id == null)
+            string? userId = User.GetUserId();
+            if (userId is null)
             {
-                return BadRequest("Failed to create transaction");
+                return Unauthorized("User ID not found in claims");
             }
-            return Ok("TransactionCreated");
+            IEnumerable<TransactionDto> transactions = await _transactionService.GetAllTransactionsAsync(userId, limit);
+            if (transactions is null)
+            {
+                return StatusCode(500, new { message = "Failed to fetch transactions" });
+            }
+            else
+            {
+                return Ok(transactions);
+            }
+
         }
 
-        [HttpGet]
-        [Route("{id}")]
-        public async Task<ActionResult<TransactionDto>> GetAsync(string id)
-        {
-            var result = await _transactionService.GetAsync(id);
-            if (result == null)
-            {
-                return NotFound("Transaction not found");
-            }
-            return result;
-        }
+
     }
 }

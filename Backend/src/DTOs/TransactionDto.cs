@@ -1,28 +1,39 @@
-﻿using System.Text.Json.Serialization;
+﻿using DoughBro.src.Database;
+using Google.Cloud.Firestore;
+using System.Text.Json.Serialization;
 
 namespace DoughBro.src.DTOs
 {
     public class TransactionDto
     {
         [JsonPropertyName("id")]
-        public string? UserId { get; set; }
+        public string? Id { get; set; }
 
-        [JsonRequired]
+        [JsonPropertyName("origin")]
+        public required string Origin { get; set; }
+
+        [JsonPropertyName("userId")]
+        public required string UserId { get; set; }
+
         [JsonPropertyName("name")]
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
-        [JsonRequired]
         [JsonPropertyName("date")]
-        public string Date { get; set; }
+        public required string Date { get; set; }
 
-        [JsonRequired]
         [JsonPropertyName("amount")]
-        public double Amount { get; set; }
+        public required decimal Amount { get; set; }
+
+        [JsonPropertyName("merchantName")]
+        public string? MerchantName { get; set; }
 
         [JsonPropertyName("description")]
         public string? Description { get; set; }
 
         [JsonPropertyName("category")]
-        public string? category { get; set; }
+        public string? Category { get; set; }
+
+        [JsonPropertyName("isPending")]
+        public required bool IsPending { get; set; }
     }
 }

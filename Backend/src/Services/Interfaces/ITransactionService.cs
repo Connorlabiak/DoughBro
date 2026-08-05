@@ -6,7 +6,10 @@ namespace DoughBro.src.Services.Interfaces
 {
     public interface ITransactionService
     {
-        public Task SyncAllUserAccounts(string userId);
+        Task SyncAllUserAccounts(string userId);
+
+        Task<IEnumerable<TransactionDto>> GetAllTransactionsAsync(string userId, int limit);
+
         Task<TransactionModel> CreateAsync(TransactionDto transactionDto);
 
         Task<TransactionDto?> GetAsync(string id);

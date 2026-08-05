@@ -58,5 +58,15 @@ namespace DoughBro.src.Repositories
 
             return docRef.Id;
         }
+
+        public async Task<IEnumerable<TransactionModel>> GetAllTransactions(string userId, int limit)
+        {
+            QuerySnapshot snapshot = await _db.Collection("users").Document(userId).Collection("transactions")
+                .OrderByDescending("Date")
+                .Limit(limit)
+                .GetSnapshotAsync();
+
+            return snapshot.Documents.Select(doc => doc.ConvertTo<TransactionModel>());
+        }
     }
 }

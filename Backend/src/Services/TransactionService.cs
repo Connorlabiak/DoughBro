@@ -125,5 +125,24 @@ namespace DoughBro.src.Services
         {
             throw new NotImplementedException();
         }
+
+        public async Task<IEnumerable<TransactionDto>> GetAllTransactionsAsync(string userId, int limit)
+        {
+            IEnumerable<TransactionModel> transactions = await _transactionRepository.GetAllTransactions(userId, limit);
+            return transactions.Select(transaction => new TransactionDto
+            {
+                Id = transaction.Id,
+                Origin = transaction.Origin,
+                UserId = transaction.UserId,
+                Name = transaction.Name,
+                Date = transaction.Date,
+                Amount = transaction.Amount,
+                Description = transaction.Description,
+                IsPending = transaction.IsPending,
+                MerchantName = transaction.MerchantName,
+                Category = transaction.Category,
+            });
+            
+        }
     }
 }

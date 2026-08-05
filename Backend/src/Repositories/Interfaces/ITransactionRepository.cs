@@ -4,8 +4,10 @@ namespace DoughBro.src.Repositories.Interfaces
 {
     public interface ITransactionRepository
     {
-        public Task SaveBatch(IEnumerable<TransactionModel> transactions, string userId);
+        Task SaveBatch(IEnumerable<TransactionModel> transactions, string userId);
 
-        public Task DeleteBatch(IEnumerable<string> transactionIds, string userId);
+        Task DeleteBatch(IEnumerable<string> transactionIds, string userId);
+
+        Task<IEnumerable<TransactionModel>> GetAllTransactions(string userId, int limit);
     }
 }

@@ -20,7 +20,7 @@ export function SyncTransactionsButton({ onSyncCompleteCallback }: SyncTransacti
             try {
                 // Hits your newly deployed .NET endpoint securely
                 await apiFetch<{ success: boolean; message: string }>("/api/transactions/sync", {
-                    method: "GET",
+                    method: "POST",
                 });
 
                 if (onSyncCompleteCallback) {
