@@ -1,4 +1,3 @@
-import React from "react";
 import { Button } from "@/components/ui/button";
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebase/firebase";
@@ -18,5 +17,4 @@ export default function Dashboard() {
 
 async function logout() {
     await signOut(auth);
-    //Add more soon.
 }

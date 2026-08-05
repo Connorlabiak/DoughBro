@@ -1,8 +1,6 @@
-import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/hooks/useAuth";
 
-// Prevents unauthenticated users from accessing protected pages
 export function ProtectedRoute() {
     const { user, loading } = useAuth();
 
@@ -17,7 +15,6 @@ export function ProtectedRoute() {
     return <Outlet />;
 }
 
-// Prevents authenticated users from seeing the login page
 export function PublicOnlyRoute() {
     const { user, loading } = useAuth();
 

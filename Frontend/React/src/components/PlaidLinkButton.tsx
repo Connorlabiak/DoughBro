@@ -1,7 +1,8 @@
-import { useState, useTransition, useEffect } from "react"; // Added useEffect
+import { useEffect, useState, useTransition } from "react";
+import type { MouseEvent } from "react";
 import { usePlaidLink } from "react-plaid-link";
-import { apiFetch } from "@/lib/apiClient";
 import { Button } from "@/components/ui/button";
+import { createLinkToken, exchangePublicToken } from "@/services/plaidService";
 
 interface PlaidLinkButtonProps {
     onSuccessCallback?: () => void;
@@ -10,18 +11,14 @@ interface PlaidLinkButtonProps {
 export function PlaidLinkButton({ onSuccessCallback }: PlaidLinkButtonProps) {
     const [linkToken, setLinkToken] = useState<string | null>(null);
     const [isPending, startTransition] = useTransition();
-    const [hasOpened, setHasOpened] = useState(false); // Track if we already triggered open()
+    const [hasOpened, setHasOpened] = useState(false);
 
-    // Step 1: Get link_token from ASP.NET backend
     const fetchLinkToken = async () => {
-        // Reset tracker tracking state if requesting a fresh token
         setHasOpened(false);
 
         startTransition(async () => {
             try {
-                const data = await apiFetch<{ linkToken: string }>("/api/plaid/create-link-token", {
-                    method: "POST",
-                });
+                const data = await createLinkToken();
                 setLinkToken(data.linkToken);
             } catch (err) {
                 console.error("Error creating Plaid Link token:", err);
@@ -29,18 +26,18 @@ export function PlaidLinkButton({ onSuccessCallback }: PlaidLinkButtonProps) {
         });
     };
 
-    // Step 2: Configure Plaid Link Hook
     const { open, ready } = usePlaidLink({
         token: linkToken,
-        onSuccess: async (public_token, metadata) => {
+        onSuccess: async (publicToken, metadata) => {
             startTransition(async () => {
                 try {
-                    await apiFetch("/api/plaid/exchange-public-token", {
-                        method: "POST",
-                        body: JSON.stringify({
-                            publicToken: public_token,
-                            institutionName: metadata.institution?.name ?? "Unknown Bank",
-                        }),
+                    if (!publicToken) {
+                        throw new Error("Plaid returned an empty public token.");
+                    }
+
+                    await exchangePublicToken({
+                        publicToken,
+                        institutionName: metadata.institution?.name || "Unknown Bank",
                     });
                     if (onSuccessCallback) {
                         onSuccessCallback();
@@ -48,32 +45,28 @@ export function PlaidLinkButton({ onSuccessCallback }: PlaidLinkButtonProps) {
                 } catch (err) {
                     console.error("Failed to exchange public token:", err);
                 } finally {
-                    // Clean up state after exchange complete
                     setLinkToken(null);
                     setHasOpened(false);
                 }
             });
         },
         onExit: () => {
-            // If user closes modal manually, reset states so they can click again
             setLinkToken(null);
             setHasOpened(false);
         }
     });
 
-    // Step 3: Automatically open Plaid Link as soon as the hook is ready
     useEffect(() => {
         if (ready && linkToken && !hasOpened) {
-            setHasOpened(true); // Prevent multi-triggers
+            setHasOpened(true);
             open();
         }
     }, [ready, linkToken, hasOpened, open]);
 
-    const handleClick = (e: React.MouseEvent) => {
+    const handleClick = (e: MouseEvent) => {
         e.preventDefault();
-        e.stopPropagation(); // Stop click bubbles
+        e.stopPropagation();
 
-        // Only fetch if a request isn't already active and we don't have a token
         if (!linkToken && !isPending) {
             fetchLinkToken();
         }
@@ -82,7 +75,7 @@ export function PlaidLinkButton({ onSuccessCallback }: PlaidLinkButtonProps) {
     return (
         <Button
             onClick={handleClick}
-            disabled={isPending || (!!linkToken && !ready)} // Keep disabled during loading transitions
+            disabled={isPending || (!!linkToken && !ready)}
             className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium"
         >
             {isPending ? "Connecting..." : "Link Bank Account"}

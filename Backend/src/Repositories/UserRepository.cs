@@ -1,13 +1,11 @@
-﻿using DoughBro.src.Database;
+using DoughBro.src.Database;
 using DoughBro.src.Models;
 using DoughBro.src.Repositories.Interfaces;
 using Google.Cloud.Firestore;
-using Newtonsoft.Json.Linq;
-using static Google.Rpc.Context.AttributeContext.Types;
 
 namespace DoughBro.src.Repositories
 {
-    public class UserRepository: IUserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly FirestoreDb _db;
 
@@ -23,6 +21,7 @@ namespace DoughBro.src.Repositories
             {
                 return null;
             }
+
             IList<PlaidAccessTokenModel> tokenList = new List<PlaidAccessTokenModel>();
             foreach (DocumentSnapshot token in tokens.Documents)
             {
@@ -36,6 +35,7 @@ namespace DoughBro.src.Repositories
                     NextCursor = token.GetValue<string?>("NextCursor")
                 });
             }
+
             return tokenList;
         }
 

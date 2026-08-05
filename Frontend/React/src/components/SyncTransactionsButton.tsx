@@ -1,6 +1,7 @@
 import { useTransition } from "react";
-import { apiFetch } from "@/lib/apiClient";
+import type { MouseEvent } from "react";
 import { Button } from "@/components/ui/button";
+import { syncTransactions } from "@/services/transactionService";
 
 interface SyncTransactionsButtonProps {
     onSyncCompleteCallback?: () => void;
@@ -9,19 +10,15 @@ interface SyncTransactionsButtonProps {
 export function SyncTransactionsButton({ onSyncCompleteCallback }: SyncTransactionsButtonProps) {
     const [isPending, startTransition] = useTransition();
 
-    const handleSyncClick = (e: React.MouseEvent) => {
+    const handleSyncClick = (e: MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
 
-        // Prevent multiple concurrent sync execution calls
         if (isPending) return;
 
         startTransition(async () => {
             try {
-                // Hits your newly deployed .NET endpoint securely
-                await apiFetch<{ success: boolean; message: string }>("/api/transactions/sync", {
-                    method: "POST",
-                });
+                await syncTransactions();
 
                 if (onSyncCompleteCallback) {
                     onSyncCompleteCallback();

@@ -1,28 +1,21 @@
-﻿using DoughBro.src.Database;
 using DoughBro.src.DTOs;
 using DoughBro.src.Exceptions;
 using DoughBro.src.Models;
 using DoughBro.src.Repositories.Interfaces;
 using DoughBro.src.Services.Interfaces;
-using Google.Cloud.Firestore;
-using Grpc.Core;
 using System.Text.Json;
 
 namespace DoughBro.src.Services
 {
-    public class TransactionService: ITransactionService
+    public class TransactionService : ITransactionService
     {
-        private readonly FirestoreDb _db;
         private readonly ITransactionRepository _transactionRepository;
-        private readonly ICategoryService _categoryService;
         private readonly IPlaidService _plaidService;
         private readonly IUserService _userService;
 
-        public TransactionService(IDbProvider dbProvider, ITransactionRepository transactionRepository, ICategoryService categoryService, IPlaidService plaidService, IUserService userService)
+        public TransactionService(ITransactionRepository transactionRepository, IPlaidService plaidService, IUserService userService)
         {
-            _db = dbProvider.GetFirestoreDb();
             _transactionRepository = transactionRepository;
-            _categoryService = categoryService;
             _plaidService = plaidService;
             _userService = userService;
         }
@@ -33,6 +26,7 @@ namespace DoughBro.src.Services
             string currentCursor = token.NextCursor ?? string.Empty;
             int retryCount = 0;
             const int maxMutationRetries = 3;
+
             while (hasMore)
             {
                 try
@@ -42,7 +36,8 @@ namespace DoughBro.src.Services
                     {
                         return;
                     }
-                    JsonElement incomingTransactions = incomingTransactionsOrNull!.Value;
+
+                    JsonElement incomingTransactions = incomingTransactionsOrNull.Value;
                     currentCursor = incomingTransactions.GetProperty("next_cursor").GetString()!;
                     hasMore = incomingTransactions.GetProperty("has_more").GetBoolean();
 
@@ -51,6 +46,7 @@ namespace DoughBro.src.Services
                     {
                         idsToRemove.Add(removed.GetProperty("transaction_id").GetString()!);
                     }
+
                     await _transactionRepository.DeleteBatch(idsToRemove, token.UserId);
 
                     List<TransactionModel> transactionsToUpsert = new List<TransactionModel>();
@@ -71,6 +67,7 @@ namespace DoughBro.src.Services
                             Category = "unsorted"
                         });
                     }
+
                     await _transactionRepository.SaveBatch(transactionsToUpsert, token.UserId);
                 }
                 catch (PlaidApiException ex) when (ex.ErrorCode == "TRANSACTIONS_SYNC_MUTATION_DURING_PAGINATION")
@@ -99,31 +96,11 @@ namespace DoughBro.src.Services
             {
                 return;
             }
+
             foreach (PlaidAccessTokenModel token in tokens)
             {
                 await ImportFromSinglePlaidLink(token);
             }
-            
-        }
-
-        public async Task<TransactionModel> CreateAsync(TransactionDto transactionDto)
-        {
-           throw new NotImplementedException();
-        }
-
-        public async Task updateTransactionCategory(string transactionId, string category)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<TransactionDto?> GetAsync(string id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task SaveBatch(JsonElement transactions, string userId, string transactionId)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<IEnumerable<TransactionDto>> GetAllTransactionsAsync(string userId, int limit)
@@ -142,7 +119,6 @@ namespace DoughBro.src.Services
                 MerchantName = transaction.MerchantName,
                 Category = transaction.Category,
             });
-            
         }
     }
 }
