@@ -1,0 +1,60 @@
+# ==========================================
+# Codex Ignore Rules (Root Level)
+# Saves platform credits by filtering tracked bloat
+# ==========================================
+
+# ------------------------------------------
+# 1. Heavy Package Lockfiles
+# (Large JSON files that burn tokens quickly)
+# ------------------------------------------
+package-lock.json
+yarn.lock
+pdm.lock
+pnpm-lock.yaml
+
+# ------------------------------------------
+# 2. Build & Auto-Generated Code Artifacts
+# ------------------------------------------
+# .NET / C# Generated Code & Cache
+**/obj/
+**/bin/
+**/Generated/
+*.designer.cs
+*.g.cs
+*.g.i.cs
+
+# Frontend Generated Code & Assets
+**/public/
+**/dist/
+**/build/
+
+# ------------------------------------------
+# 3. Test Coverage & Snapshot Files
+# ------------------------------------------
+**/coverage/
+**/__snapshots__/
+*.lcov
+
+# ------------------------------------------
+# 4. Binary, Media, & Static Assets
+# ------------------------------------------
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.ico
+*.pdf
+*.zip
+*.tar.gz
+
+# ------------------------------------------
+# 5. Sensitive Keys & Certificates
+# (Extra precaution in addition to .gitignore)
+# ------------------------------------------
+*.json
+!package.json
+!tsconfig*.json
+!appsettings*.json
+*.pfx
+*.pem
