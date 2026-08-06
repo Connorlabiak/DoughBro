@@ -18,6 +18,11 @@ A personal finance tracking app that syncs transactions via Plaid API and allows
 - **Do Not Re-write Unchanged Code:** Insert changes instead of rewriting large sections.
 - **Avoid comments if not necessary:** Only include comments if the code is not self-explanatory or if it clarifies a complex logic.
 - **Be Secure:** API endpoints shuold be authorized unless explicitly allowed. The software should be secure for compliance with Plaid API.
+- **Build Verification Only:** The ONLY terminal/execution task Codex is permitted to run is verifying that the project compiles.
+   - For Backend: `dotnet build`
+   - For Frontend: `npm.cmd run build`
+- **NO Background Processes:** NEVER start, launch, or manage dev servers (`npm run dev`, `dotnet run`, `dotnet watch`, background jobs, or HTTP listeners).
+- **NO Execution Beyond Build:** Once `dotnet build` and `npm.cmd run build` pass successfully, immediately stop and hand control back to the user. Do not attempt to run or preview the app.
 
 ## 5. Mandatory Pre-Execution Git Workflow (ALWAYS ENFORCE)
 Before modifying, creating, or deleting ANY files for a task:

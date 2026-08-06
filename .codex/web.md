@@ -22,7 +22,7 @@ Keep code organized by feature and UI responsibility:
 
 ## 4. Key UI/UX Specifications
 
-Everything should exist in wigets within the same dashboard page. Smaller functions shuold exist within modals such as add transaction or add category.
+Everything should exist in wigets within the same dashboard page in `/src/components/Dashboard.tsx`. Smaller functions shuold exist within modals such as add transaction or add category.
 
 ### A. Drag-and-Drop Categorization Widget (Core Selling Point)
 - Present uncategorized transactions sequentially in a queue or stack.
