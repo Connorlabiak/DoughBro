@@ -1,4 +1,6 @@
 using DoughBro.src.DTOs;
+using DoughBro.src.Extensions;
+using DoughBro.src.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,22 +11,61 @@ namespace DoughBro.src.Controllers
     [Authorize]
     public class CategoryController : ControllerBase
     {
-        private static readonly IReadOnlyList<CategoryDto> Categories = new List<CategoryDto>
+        private readonly ICategoryService _categoryService;
+
+        public CategoryController(ICategoryService categoryService)
         {
-            new() { Id = "food", Name = "Food", Color = "#ef4444" },
-            new() { Id = "groceries", Name = "Groceries", Color = "#22c55e" },
-            new() { Id = "transport", Name = "Transport", Color = "#0ea5e9" },
-            new() { Id = "bills", Name = "Bills", Color = "#f59e0b" },
-            new() { Id = "shopping", Name = "Shopping", Color = "#a855f7" },
-            new() { Id = "entertainment", Name = "Entertainment", Color = "#ec4899" },
-            new() { Id = "health", Name = "Health", Color = "#14b8a6" },
-            new() { Id = "travel", Name = "Travel", Color = "#6366f1" },
-        };
+            _categoryService = categoryService;
+        }
 
         [HttpGet]
-        public ActionResult<IEnumerable<CategoryDto>> GetCategories()
+        public async Task<IActionResult> GetCategories()
         {
-            return Ok(Categories);
+            string? userId = User.GetUserId();
+            if (userId is null)
+            {
+                return Unauthorized("User ID not found in claims");
+            }
+
+            IEnumerable<CategoryDto> categories = await _categoryService.GetCategoriesAsync(userId);
+            return Ok(categories);
+        }
+
+        [HttpGet("colors")]
+        public async Task<IActionResult> GetCategoryColors()
+        {
+            string? userId = User.GetUserId();
+            if (userId is null)
+            {
+                return Unauthorized("User ID not found in claims");
+            }
+
+            IEnumerable<CategoryColorDto> colors = await _categoryService.GetCategoryColorsAsync(userId);
+            return Ok(colors);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddCategory([FromBody] CreateCategoryRequest request)
+        {
+            string? userId = User.GetUserId();
+            if (userId is null)
+            {
+                return Unauthorized("User ID not found in claims");
+            }
+
+            try
+            {
+                CategoryDto category = await _categoryService.AddCategoryAsync(userId, request);
+                return CreatedAtAction(nameof(GetCategories), new { id = category.Id }, category);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
         }
     }
 }

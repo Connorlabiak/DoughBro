@@ -1,0 +1,88 @@
+export const CATEGORY_COLOR_CLASSES = {
+    tomato: {
+        card: "border-red-500 bg-red-500/15 shadow-red-500/20",
+        selected: "border-red-500 bg-red-500/20 shadow-red-500/30",
+        swatch: "bg-red-500",
+    },
+    rose: {
+        card: "border-rose-500 bg-rose-500/15 shadow-rose-500/20",
+        selected: "border-rose-500 bg-rose-500/20 shadow-rose-500/30",
+        swatch: "bg-rose-500",
+    },
+    pink: {
+        card: "border-pink-500 bg-pink-500/15 shadow-pink-500/20",
+        selected: "border-pink-500 bg-pink-500/20 shadow-pink-500/30",
+        swatch: "bg-pink-500",
+    },
+    violet: {
+        card: "border-violet-500 bg-violet-500/15 shadow-violet-500/20",
+        selected: "border-violet-500 bg-violet-500/20 shadow-violet-500/30",
+        swatch: "bg-violet-500",
+    },
+    indigo: {
+        card: "border-indigo-500 bg-indigo-500/15 shadow-indigo-500/20",
+        selected: "border-indigo-500 bg-indigo-500/20 shadow-indigo-500/30",
+        swatch: "bg-indigo-500",
+    },
+    blue: {
+        card: "border-blue-500 bg-blue-500/15 shadow-blue-500/20",
+        selected: "border-blue-500 bg-blue-500/20 shadow-blue-500/30",
+        swatch: "bg-blue-500",
+    },
+    sky: {
+        card: "border-sky-500 bg-sky-500/15 shadow-sky-500/20",
+        selected: "border-sky-500 bg-sky-500/20 shadow-sky-500/30",
+        swatch: "bg-sky-500",
+    },
+    cyan: {
+        card: "border-cyan-500 bg-cyan-500/15 shadow-cyan-500/20",
+        selected: "border-cyan-500 bg-cyan-500/20 shadow-cyan-500/30",
+        swatch: "bg-cyan-500",
+    },
+    teal: {
+        card: "border-teal-500 bg-teal-500/15 shadow-teal-500/20",
+        selected: "border-teal-500 bg-teal-500/20 shadow-teal-500/30",
+        swatch: "bg-teal-500",
+    },
+    emerald: {
+        card: "border-emerald-500 bg-emerald-500/15 shadow-emerald-500/20",
+        selected: "border-emerald-500 bg-emerald-500/20 shadow-emerald-500/30",
+        swatch: "bg-emerald-500",
+    },
+    green: {
+        card: "border-green-500 bg-green-500/15 shadow-green-500/20",
+        selected: "border-green-500 bg-green-500/20 shadow-green-500/30",
+        swatch: "bg-green-500",
+    },
+    lime: {
+        card: "border-lime-500 bg-lime-500/15 shadow-lime-500/20",
+        selected: "border-lime-500 bg-lime-500/20 shadow-lime-500/30",
+        swatch: "bg-lime-500",
+    },
+    amber: {
+        card: "border-amber-500 bg-amber-500/15 shadow-amber-500/20",
+        selected: "border-amber-500 bg-amber-500/20 shadow-amber-500/30",
+        swatch: "bg-amber-500",
+    },
+    orange: {
+        card: "border-orange-500 bg-orange-500/15 shadow-orange-500/20",
+        selected: "border-orange-500 bg-orange-500/20 shadow-orange-500/30",
+        swatch: "bg-orange-500",
+    },
+    slate: {
+        card: "border-slate-500 bg-slate-500/15 shadow-slate-500/20",
+        selected: "border-slate-500 bg-slate-500/20 shadow-slate-500/30",
+        swatch: "bg-slate-500",
+    },
+    stone: {
+        card: "border-stone-500 bg-stone-500/15 shadow-stone-500/20",
+        selected: "border-stone-500 bg-stone-500/20 shadow-stone-500/30",
+        swatch: "bg-stone-500",
+    },
+} as const;
+
+export type CategoryColorId = keyof typeof CATEGORY_COLOR_CLASSES;
+
+export function getCategoryColorClasses(colorId: string) {
+    return CATEGORY_COLOR_CLASSES[colorId as CategoryColorId] ?? CATEGORY_COLOR_CLASSES.slate;
+}

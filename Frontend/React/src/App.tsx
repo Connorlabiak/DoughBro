@@ -3,6 +3,7 @@ import SignIn from "@/components/Login";
 import { AuthProvider } from "@/context/AuthContext";
 import { ProtectedRoute, PublicOnlyRoute } from "@/components/RouteGuards";
 import Dashboard from "@/components/Dashboard";
+import CategoriesPage from "@/components/categories/CategoriesPage";
 
 function LoginPage() {
     const navigate = useNavigate();
@@ -23,6 +24,7 @@ export default function App() {
 
                     <Route element={<ProtectedRoute />}>
                         <Route path="/dashboard" element={<Dashboard />} />
+                        <Route path="/categories" element={<CategoriesPage />} />
                     </Route>
 
                     <Route path="/" element={<Navigate to="/dashboard" replace />} />

@@ -2,18 +2,12 @@ using System.Text.Json.Serialization;
 
 namespace DoughBro.src.DTOs
 {
-    public class CategoryDto
+    public class CreateCategoryRequest
     {
-        [JsonPropertyName("id")]
-        public required string Id { get; set; }
-
         [JsonPropertyName("name")]
         public required string Name { get; set; }
 
         [JsonPropertyName("colorId")]
         public required string ColorId { get; set; }
-
-        [JsonPropertyName("color")]
-        public required string Color { get; set; }
     }
 }

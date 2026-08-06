@@ -3,6 +3,9 @@
 ## Currently Working On
 
 ## Recently Completed
+- [x] Added category management page with category list and add-category modal.
+- [x] Added standardized category color classes for the 16-color backend palette.
+- [x] Added dashboard navigation to category management.
 - [x] Moved Plaid and transaction API calls into typed service modules under `/src/services`.
 - [x] Added shared API response/request interfaces under `/src/types`.
 - [x] Split auth context and hook modules for cleaner component exports.
@@ -17,5 +20,6 @@
 - **Login Flow:** Firebase Auth handles user login and JWT issuance in `/src/components/Login.tsx`
 - **Auth Flow:** React gets JWT from Firebase -> Sends in API headers to .NET Backend.
 - **Plaid Link Flow:** React handles Plaid Link flow in `/src/components/PlaidLinkButton.tsx` -> Sends public token to backend for exchange.
+- **Category Management Flow:** React loads categories and palette usage through `/src/services/categoryService.ts`.
 
 ## Known Bugs / Tech Debt

@@ -5,13 +5,17 @@ import { PlaidLinkButton } from "@/components/PlaidLinkButton";
 import { SyncTransactionsButton } from "./SyncTransactionsButton";
 import { useEffect, useMemo, useState } from "react";
 import type { DragEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import type { Category, Transaction } from "@/types/api";
+import { getCategoryColorClasses } from "@/lib/categoryColors";
+import { cn } from "@/lib/utils";
 import { getCategories } from "@/services/categoryService";
 import { getTransactions, updateTransactionCategory } from "@/services/transactionService";
 
 const UNCATEGORIZED_VALUES = new Set([undefined, null, "", "unsorted"]);
 
 export default function Dashboard() {
+    const navigate = useNavigate();
     const [categories, setCategories] = useState<Category[]>([]);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [activeTransactionId, setActiveTransactionId] = useState<string | null>(null);
@@ -124,6 +128,7 @@ export default function Dashboard() {
                     </p>
                 </div>
                 <div className="flex flex-wrap items-center justify-end gap-3">
+                    <Button variant="outline" onClick={() => navigate("/categories")}>Categories</Button>
                     <PlaidLinkButton />
                     <SyncTransactionsButton onSyncCompleteCallback={loadDashboardData} />
                     <Button variant="outline" onClick={() => logout()}>Logout</Button>
@@ -173,6 +178,7 @@ export default function Dashboard() {
                 <section className="grid grid-cols-2 gap-4 md:grid-cols-4 xl:grid-rows-2">
                     {categories.map((category) => {
                         const isHovered = hoveredCategoryId === category.id;
+                        const colorClasses = getCategoryColorClasses(category.colorId);
 
                         return (
                             <div
@@ -181,18 +187,12 @@ export default function Dashboard() {
                                 onDragOver={(event) => handleDragOver(event, category.id)}
                                 onDragLeave={(event) => handleDragLeave(event, category.id)}
                                 onDrop={(event) => handleDrop(event, category)}
-                                className={[
+                                className={cn(
                                     "flex min-h-36 items-center justify-center border-2 p-4 text-center shadow-sm",
                                     "transition-all duration-150 ease-out will-change-transform",
+                                    colorClasses.card,
                                     isHovered ? "z-10 scale-[1.06] shadow-2xl" : "hover:scale-[1.02] hover:shadow-lg",
-                                ].join(" ")}
-                                style={{
-                                    backgroundColor: `${category.color}24`,
-                                    borderColor: category.color,
-                                    boxShadow: isHovered
-                                        ? `0 20px 40px -18px ${category.color}`
-                                        : `0 10px 24px -22px ${category.color}`,
-                                }}
+                                )}
                             >
                                 <span className="text-lg font-bold text-zinc-950">{category.name}</span>
                             </div>
