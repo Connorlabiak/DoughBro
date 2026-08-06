@@ -120,5 +120,10 @@ namespace DoughBro.src.Services
                 Category = transaction.Category,
             });
         }
+
+        public async Task UpdateTransactionCategoryAsync(string userId, string transactionId, string category)
+        {
+            await _transactionRepository.UpdateCategoryAsync(userId, transactionId, category);
+        }
     }
 }

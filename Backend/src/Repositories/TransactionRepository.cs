@@ -60,5 +60,11 @@ namespace DoughBro.src.Repositories
 
             return snapshot.Documents.Select(doc => doc.ConvertTo<TransactionModel>());
         }
+
+        public async Task UpdateCategoryAsync(string userId, string transactionId, string category)
+        {
+            DocumentReference docRef = _db.Collection("users").Document(userId).Collection("transactions").Document(transactionId);
+            await docRef.UpdateAsync("Category", category);
+        }
     }
 }
