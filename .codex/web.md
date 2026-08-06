@@ -22,17 +22,19 @@ Keep code organized by feature and UI responsibility:
 
 ## 4. Key UI/UX Specifications
 
-### A. Drag-and-Drop Categorization Screen (Core Selling Point)
+Everything should exist in wigets within the same dashboard page in `/src/components/Dashboard.tsx`. Smaller functions shuold exist within modals such as add transaction or add category.
+
+### A. Drag-and-Drop Categorization Widget (Core Selling Point)
 - Present uncategorized transactions sequentially in a queue or stack.
 - Transactions should have edit icon for editing details (amount, date, description, name).
 - Allow users to drag transactions onto category cards for fast batch processing.
 - Provide clear visual cues, smooth animations, and an instant "Undo" action.
 
-### B. Summary & Analytics Page
+### B. Summary & Analytics Widget
 - Highly customizable spending trend graphs (Group by: Week, Month, Category).
 - Filterable date ranges and interactive chart tooltips.
 
-### C. Category Management Page
+### C. Category Management Widget
 - Allow users to create, edit, reorder, color-code categories.
 
 ## 5. Coding & Style Rules

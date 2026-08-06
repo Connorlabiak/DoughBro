@@ -1,4 +1,4 @@
-import React, { useState, useActionState, useTransition } from "react";
+import { useActionState, useState, useTransition } from "react";
 import {
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
@@ -22,7 +22,6 @@ export default function Login({ onSuccess }: LoginProps) {
     const [isSignUp, setIsSignUp] = useState(false);
     const [isPendingGoogle, startGoogleTransition] = useTransition();
 
-    // Helper to map Firebase errors to user-friendly messages
     const getErrorMessage = (code: string) => {
         switch (code) {
             case "auth/invalid-credential":
@@ -38,7 +37,6 @@ export default function Login({ onSuccess }: LoginProps) {
         }
     };
 
-    // React 19 Async Action for Form Submission
     const [errorMessage, formAction, isPendingForm] = useActionState(
         async (_previousState: string | null, formData: FormData) => {
             const email = formData.get("email") as string;
@@ -57,10 +55,9 @@ export default function Login({ onSuccess }: LoginProps) {
                 return getErrorMessage(authError.code);
             }
         },
-        null // Initial state
+        null
     );
 
-    // Non-form action handler using React 19's useTransition
     const handleGoogleSignIn = () => {
         startGoogleTransition(async () => {
             try {

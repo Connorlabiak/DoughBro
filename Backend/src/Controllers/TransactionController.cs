@@ -50,6 +50,23 @@ namespace DoughBro.src.Controllers
 
         }
 
+        [HttpPatch("{transactionId}/category")]
+        public async Task<IActionResult> UpdateTransactionCategory(string transactionId, [FromBody] UpdateTransactionCategoryRequest request)
+        {
+            string? userId = User.GetUserId();
+            if (userId is null)
+            {
+                return Unauthorized("User ID not found in claims");
+            }
+
+            if (string.IsNullOrWhiteSpace(transactionId) || string.IsNullOrWhiteSpace(request.Category))
+            {
+                return BadRequest(new { message = "Transaction ID and category are required" });
+            }
+
+            await _transactionService.UpdateTransactionCategoryAsync(userId, transactionId, request.Category);
+            return NoContent();
+        }
 
     }
 }

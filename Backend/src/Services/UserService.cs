@@ -1,11 +1,10 @@
-﻿using DoughBro.src.Models;
+using DoughBro.src.Models;
 using DoughBro.src.Repositories.Interfaces;
 using DoughBro.src.Services.Interfaces;
-using Google.Cloud.Firestore;
 
 namespace DoughBro.src.Services
 {
-    public class UserService: IUserService
+    public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
 

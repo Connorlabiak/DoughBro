@@ -3,6 +3,9 @@
 ## Currently Working On
 
 ## Recently Completed
+- [x] Removed non-implemented transaction service methods from interfaces and classes.
+- [x] Removed missing category service/repository registrations from backend DI.
+- [x] Added XML comments for backend service and repository interface methods.
 - [x] Implemented backend endpoint for transaction retrieval.
 - [x] Deployed Backend to Google Cloud Run with CI/CD pipeline.
 - [x] Implemented Plaid Sync for transactions.
