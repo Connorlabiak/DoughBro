@@ -1,33 +1,22 @@
 {
   "profiles": {
-    "http": {
-      "commandName": "Project",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "dotnetRunMessages": true,
-      "applicationUrl": "http://localhost:5141"
-    },
-    "https": {
-      "commandName": "Project",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:7229;http://localhost:5141"
-    },
     "Container (Dockerfile)": {
       "commandName": "Docker",
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
       "environmentVariables": {
-        "ASPNETCORE_HTTPS_PORTS": "8081",
-        "ASPNETCORE_HTTP_PORTS": "8080"
+        "ASPNETCORE_HTTP_PORTS": "8080",
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Firebase__project_id": "doughbro",
+        "Plaid__ClientId": "68ba5624ed9295002480af09",
+        "Plaid__Environment": "sandbox",
+        "Plaid__Secret": "",
+        "GOOGLE_APPLICATION_CREDENTIALS": "/app/secrets/doughbro-dev-key.json"
       },
       "publishAllPorts": true,
-      "useSSL": true,
-      "httpPort": 5500,
-      "sslPort": 5501
+      "useSSL": false,
+      "httpPort": 8080,
+      "DockerfileRunArguments": "-v \"C:\\Keys\\doughbro-dev-key.json:/app/secrets/doughbro-dev-key.json:ro\""
     }
   },
-  "$schema": "https://json.schemastore.org/launchsettings.json"
+  "$schema": "https://schemastore.org"
 }

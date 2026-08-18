@@ -1,16 +1,16 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
+// Dynamically pull the active environment variables instead of hardcoded strings
 const firebaseConfig = {
-    apiKey: "AIzaSyDIwt6AiEXnPwJ8qBNvg8Aq0yyE4HR7Qqg",
-    authDomain: "doughbro.firebaseapp.com",
-    projectId: "doughbro",
-    storageBucket: "doughbro.firebasestorage.app",
-    messagingSenderId: "782689168006",
-    appId: "1:782689168006:web:c55c26823ebdb8b2d97f07",
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 const app = initializeApp(firebaseConfig);
-
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
