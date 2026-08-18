@@ -10,4 +10,10 @@ namespace DoughBro.src.DTOs
         [JsonPropertyName("colorId")]
         public required string ColorId { get; set; }
     }
+
+    public class UpdateCategoryRequest
+    {
+        [JsonPropertyName("name")]
+        public required string Name { get; set; }
+    }
 }

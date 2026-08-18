@@ -3,6 +3,7 @@
 ## Currently Working On
 
 ## Recently Completed
+- [x] Added category editing, transaction lookup, and deletion with transaction category cleanup.
 - [x] Added Firestore-backed user category creation and retrieval APIs.
 - [x] Added standardized category color palette API with per-user usage tracking.
 - [x] Added atomic category creation/color reservation using user color usage documents.

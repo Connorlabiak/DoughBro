@@ -3,6 +3,7 @@ import { signOut } from "firebase/auth";
 import { auth } from "@/firebase/firebase";
 import { PlaidLinkButton } from "@/components/PlaidLinkButton";
 import { SyncTransactionsButton } from "./SyncTransactionsButton";
+import { CategoryDetailsModal } from "./categories/CategoryDetailsModal";
 import { useEffect, useMemo, useState } from "react";
 import type { DragEvent } from "react";
 import { useNavigate } from "react-router-dom";
@@ -20,6 +21,7 @@ export default function Dashboard() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [activeTransactionId, setActiveTransactionId] = useState<string | null>(null);
     const [hoveredCategoryId, setHoveredCategoryId] = useState<string | null>(null);
+    const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isUpdating, setIsUpdating] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -187,8 +189,9 @@ export default function Dashboard() {
                                 onDragOver={(event) => handleDragOver(event, category.id)}
                                 onDragLeave={(event) => handleDragLeave(event, category.id)}
                                 onDrop={(event) => handleDrop(event, category)}
+                                onClick={() => setSelectedCategory(category)}
                                 className={cn(
-                                    "flex min-h-36 items-center justify-center border-2 p-4 text-center shadow-sm",
+                                    "flex min-h-36 cursor-pointer items-center justify-center border-2 p-4 text-center shadow-sm",
                                     "transition-all duration-150 ease-out will-change-transform",
                                     colorClasses.card,
                                     isHovered ? "z-10 scale-[1.06] shadow-2xl" : "hover:scale-[1.02] hover:shadow-lg",
@@ -200,6 +203,26 @@ export default function Dashboard() {
                     })}
                 </section>
             </main>
+
+            {selectedCategory && (
+                <CategoryDetailsModal
+                    category={selectedCategory}
+                    onClose={() => setSelectedCategory(null)}
+                    onCategoryUpdated={(updatedCategory) => {
+                        setCategories((currentCategories) => currentCategories.map((category) =>
+                            category.id === updatedCategory.id ? updatedCategory : category,
+                        ));
+                        setSelectedCategory(updatedCategory);
+                    }}
+                    onCategoryDeleted={(categoryId) => {
+                        setCategories((currentCategories) => currentCategories.filter((category) => category.id !== categoryId));
+                        setTransactions((currentTransactions) => currentTransactions.map((transaction) =>
+                            transaction.category === categoryId ? { ...transaction, category: undefined } : transaction,
+                        ));
+                        setSelectedCategory(null);
+                    }}
+                />
+            )}
         </div>
     );
 }

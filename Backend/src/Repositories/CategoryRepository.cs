@@ -66,5 +66,38 @@ namespace DoughBro.src.Repositories
             IEnumerable<CategoryModel> categories = await GetCategoriesAsync(userId);
             return categories.Select(category => category.ColorId).ToHashSet(StringComparer.OrdinalIgnoreCase);
         }
+
+        public async Task<CategoryModel?> UpdateCategoryNameAsync(string userId, string categoryId, string name)
+        {
+            DocumentReference categoryRef = _db.Collection("users").Document(userId).Collection("categories").Document(categoryId);
+            DocumentSnapshot snapshot = await categoryRef.GetSnapshotAsync();
+            if (!snapshot.Exists)
+            {
+                return null;
+            }
+
+            await categoryRef.UpdateAsync("Name", name);
+            CategoryModel category = snapshot.ConvertTo<CategoryModel>();
+            category.Name = name;
+            return category;
+        }
+
+        public async Task<bool> DeleteCategoryAsync(string userId, string categoryId)
+        {
+            DocumentReference userRef = _db.Collection("users").Document(userId);
+            DocumentReference categoryRef = userRef.Collection("categories").Document(categoryId);
+            DocumentSnapshot snapshot = await categoryRef.GetSnapshotAsync();
+            if (!snapshot.Exists)
+            {
+                return false;
+            }
+
+            CategoryModel category = snapshot.ConvertTo<CategoryModel>();
+            WriteBatch batch = _db.StartBatch();
+            batch.Delete(categoryRef);
+            batch.Delete(userRef.Collection("category_color_usage").Document(category.ColorId));
+            await batch.CommitAsync();
+            return true;
+        }
     }
 }

@@ -35,6 +35,10 @@ export interface CreateCategoryRequest {
     colorId: string;
 }
 
+export interface UpdateCategoryRequest {
+    name: string;
+}
+
 export interface Transaction {
     id?: string;
     origin: string;

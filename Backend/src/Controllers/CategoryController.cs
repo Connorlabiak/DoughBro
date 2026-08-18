@@ -67,5 +67,51 @@ namespace DoughBro.src.Controllers
                 return Conflict(new { message = ex.Message });
             }
         }
+
+        [HttpGet("{categoryId}/transactions")]
+        public async Task<IActionResult> GetCategoryTransactions(string categoryId)
+        {
+            string? userId = User.GetUserId();
+            if (userId is null)
+            {
+                return Unauthorized("User ID not found in claims");
+            }
+
+            IEnumerable<TransactionDto> transactions = await _categoryService.GetCategoryTransactionsAsync(userId, categoryId);
+            return Ok(transactions);
+        }
+
+        [HttpPatch("{categoryId}")]
+        public async Task<IActionResult> UpdateCategory(string categoryId, [FromBody] UpdateCategoryRequest request)
+        {
+            string? userId = User.GetUserId();
+            if (userId is null)
+            {
+                return Unauthorized("User ID not found in claims");
+            }
+
+            try
+            {
+                CategoryDto? category = await _categoryService.UpdateCategoryAsync(userId, categoryId, request);
+                return category is null ? NotFound() : Ok(category);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpDelete("{categoryId}")]
+        public async Task<IActionResult> DeleteCategory(string categoryId)
+        {
+            string? userId = User.GetUserId();
+            if (userId is null)
+            {
+                return Unauthorized("User ID not found in claims");
+            }
+
+            bool wasDeleted = await _categoryService.DeleteCategoryAsync(userId, categoryId);
+            return wasDeleted ? NoContent() : NotFound();
+        }
     }
 }

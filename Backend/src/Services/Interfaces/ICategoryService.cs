@@ -25,5 +25,30 @@ namespace DoughBro.src.Services.Interfaces
         /// <param name="request">The category creation request.</param>
         /// <returns>The created category DTO.</returns>
         Task<CategoryDto> AddCategoryAsync(string userId, CreateCategoryRequest request);
+
+        /// <summary>
+        /// Updates a category name for the authenticated user.
+        /// </summary>
+        /// <param name="userId">The authenticated Firebase user ID.</param>
+        /// <param name="categoryId">The category document ID.</param>
+        /// <param name="request">The requested category changes.</param>
+        /// <returns>The updated category, or null if it does not exist.</returns>
+        Task<CategoryDto?> UpdateCategoryAsync(string userId, string categoryId, UpdateCategoryRequest request);
+
+        /// <summary>
+        /// Gets all transactions assigned to a category.
+        /// </summary>
+        /// <param name="userId">The authenticated Firebase user ID.</param>
+        /// <param name="categoryId">The category document ID.</param>
+        /// <returns>The category's transactions as DTOs.</returns>
+        Task<IEnumerable<TransactionDto>> GetCategoryTransactionsAsync(string userId, string categoryId);
+
+        /// <summary>
+        /// Deletes a category and removes it from all associated transactions.
+        /// </summary>
+        /// <param name="userId">The authenticated Firebase user ID.</param>
+        /// <param name="categoryId">The category document ID.</param>
+        /// <returns>True when the category was deleted; otherwise, false.</returns>
+        Task<bool> DeleteCategoryAsync(string userId, string categoryId);
     }
 }

@@ -20,6 +20,23 @@ namespace DoughBro.src.Repositories.Interfaces
         Task<CategoryModel?> AddCategoryAsync(string userId, CategoryModel category);
 
         /// <summary>
+        /// Updates a category name for the authenticated user.
+        /// </summary>
+        /// <param name="userId">The authenticated Firebase user ID.</param>
+        /// <param name="categoryId">The category document ID.</param>
+        /// <param name="name">The updated category name.</param>
+        /// <returns>The updated category, or null if it does not exist.</returns>
+        Task<CategoryModel?> UpdateCategoryNameAsync(string userId, string categoryId, string name);
+
+        /// <summary>
+        /// Deletes a category and releases its color for the authenticated user.
+        /// </summary>
+        /// <param name="userId">The authenticated Firebase user ID.</param>
+        /// <param name="categoryId">The category document ID.</param>
+        /// <returns>True when the category was deleted; otherwise, false.</returns>
+        Task<bool> DeleteCategoryAsync(string userId, string categoryId);
+
+        /// <summary>
         /// Gets category color IDs already used by the authenticated user.
         /// </summary>
         /// <param name="userId">The authenticated Firebase user ID.</param>

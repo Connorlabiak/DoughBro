@@ -66,5 +66,32 @@ namespace DoughBro.src.Repositories
             DocumentReference docRef = _db.Collection("users").Document(userId).Collection("transactions").Document(transactionId);
             await docRef.UpdateAsync("Category", category);
         }
+
+        public async Task<IEnumerable<TransactionModel>> GetTransactionsByCategoryAsync(string userId, string categoryId)
+        {
+            QuerySnapshot snapshot = await _db.Collection("users").Document(userId).Collection("transactions")
+                .WhereEqualTo("Category", categoryId)
+                .GetSnapshotAsync();
+
+            return snapshot.Documents.Select(doc => doc.ConvertTo<TransactionModel>());
+        }
+
+        public async Task ClearCategoryAsync(string userId, string categoryId)
+        {
+            IEnumerable<TransactionModel> transactions = await GetTransactionsByCategoryAsync(userId, categoryId);
+
+            foreach (TransactionModel[] chunk in transactions.Chunk(490))
+            {
+                WriteBatch batch = _db.StartBatch();
+                foreach (TransactionModel transaction in chunk)
+                {
+                    DocumentReference transactionRef = _db.Collection("users").Document(userId)
+                        .Collection("transactions").Document(transaction.Id);
+                    batch.Update(transactionRef, "Category", FieldValue.Delete);
+                }
+
+                await batch.CommitAsync();
+            }
+        }
     }
 }

@@ -9,6 +9,7 @@ import { signOut } from "firebase/auth";
 import { useEffect, useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import { CategoryDetailsModal } from "./CategoryDetailsModal";
 
 export default function CategoriesPage() {
     const navigate = useNavigate();
@@ -16,6 +17,7 @@ export default function CategoriesPage() {
     const [colors, setColors] = useState<CategoryColor[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
     const [categoryName, setCategoryName] = useState("");
     const [selectedColorId, setSelectedColorId] = useState("");
     const [isSaving, setIsSaving] = useState(false);
@@ -131,8 +133,9 @@ export default function CategoriesPage() {
                         {categories.map((category) => (
                             <article
                                 key={category.id}
+                                onClick={() => setSelectedCategory(category)}
                                 className={cn(
-                                    "flex min-h-32 items-center justify-center border-2 p-5 text-center shadow-lg",
+                                    "flex min-h-32 cursor-pointer items-center justify-center border-2 p-5 text-center shadow-lg transition-all duration-150 ease-out will-change-transform hover:scale-[1.02] hover:shadow-2xl",
                                     getCategoryColorClasses(category.colorId).card,
                                 )}
                             >
@@ -216,6 +219,26 @@ export default function CategoriesPage() {
                         </div>
                     </form>
                 </div>
+            )}
+
+            {selectedCategory && (
+                <CategoryDetailsModal
+                    category={selectedCategory}
+                    onClose={() => setSelectedCategory(null)}
+                    onCategoryUpdated={(updatedCategory) => {
+                        setCategories((currentCategories) => currentCategories.map((category) =>
+                            category.id === updatedCategory.id ? updatedCategory : category,
+                        ));
+                        setSelectedCategory(updatedCategory);
+                    }}
+                    onCategoryDeleted={(categoryId) => {
+                        setCategories((currentCategories) => currentCategories.filter((category) => category.id !== categoryId));
+                        setColors((currentColors) => currentColors.map((color) =>
+                            color.id === selectedCategory.colorId ? { ...color, isUsed: false } : color,
+                        ));
+                        setSelectedCategory(null);
+                    }}
+                />
             )}
         </div>
     );
