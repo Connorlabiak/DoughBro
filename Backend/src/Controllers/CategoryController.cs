@@ -68,19 +68,6 @@ namespace DoughBro.src.Controllers
             }
         }
 
-        [HttpGet("{categoryId}/transactions")]
-        public async Task<IActionResult> GetCategoryTransactions(string categoryId)
-        {
-            string? userId = User.GetUserId();
-            if (userId is null)
-            {
-                return Unauthorized("User ID not found in claims");
-            }
-
-            IEnumerable<TransactionDto> transactions = await _categoryService.GetCategoryTransactionsAsync(userId, categoryId);
-            return Ok(transactions);
-        }
-
         [HttpPatch("{categoryId}")]
         public async Task<IActionResult> UpdateCategory(string categoryId, [FromBody] UpdateCategoryRequest request)
         {
@@ -98,6 +85,10 @@ namespace DoughBro.src.Controllers
             catch (ArgumentException ex)
             {
                 return BadRequest(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
             }
         }
 

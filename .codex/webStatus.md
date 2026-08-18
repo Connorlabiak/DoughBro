@@ -3,6 +3,7 @@
 ## Currently Working On
 
 ## Recently Completed
+- [x] Added color selection to the shared category details modal.
 - [x] Added shared category details modal with transaction history, renaming, and deletion.
 - [x] Added category management page with category list and add-category modal.
 - [x] Added standardized category color classes for the 16-color backend palette.

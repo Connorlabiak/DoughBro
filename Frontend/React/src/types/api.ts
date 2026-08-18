@@ -37,6 +37,7 @@ export interface CreateCategoryRequest {
 
 export interface UpdateCategoryRequest {
     name: string;
+    colorId: string;
 }
 
 export interface Transaction {

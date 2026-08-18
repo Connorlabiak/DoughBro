@@ -67,19 +67,45 @@ namespace DoughBro.src.Repositories
             return categories.Select(category => category.ColorId).ToHashSet(StringComparer.OrdinalIgnoreCase);
         }
 
-        public async Task<CategoryModel?> UpdateCategoryNameAsync(string userId, string categoryId, string name)
+        public async Task<CategoryModel?> UpdateCategoryAsync(string userId, string categoryId, CategoryModel category)
         {
-            DocumentReference categoryRef = _db.Collection("users").Document(userId).Collection("categories").Document(categoryId);
+            DocumentReference userRef = _db.Collection("users").Document(userId);
+            DocumentReference categoryRef = userRef.Collection("categories").Document(categoryId);
             DocumentSnapshot snapshot = await categoryRef.GetSnapshotAsync();
             if (!snapshot.Exists)
             {
                 return null;
             }
 
-            await categoryRef.UpdateAsync("Name", name);
-            CategoryModel category = snapshot.ConvertTo<CategoryModel>();
-            category.Name = name;
-            return category;
+            CategoryModel existingCategory = snapshot.ConvertTo<CategoryModel>();
+            category.Id = categoryId;
+            WriteBatch batch = _db.StartBatch();
+            batch.Update(categoryRef, new Dictionary<string, object>
+            {
+                ["Name"] = category.Name,
+                ["ColorId"] = category.ColorId,
+                ["Color"] = category.Color,
+            });
+
+            if (!string.Equals(existingCategory.ColorId, category.ColorId, StringComparison.OrdinalIgnoreCase))
+            {
+                batch.Create(userRef.Collection("category_color_usage").Document(category.ColorId), new Dictionary<string, object>
+                {
+                    ["ColorId"] = category.ColorId,
+                    ["CreatedAt"] = Timestamp.GetCurrentTimestamp(),
+                });
+                batch.Delete(userRef.Collection("category_color_usage").Document(existingCategory.ColorId));
+            }
+
+            try
+            {
+                await batch.CommitAsync();
+                return category;
+            }
+            catch (RpcException ex) when (ex.StatusCode == StatusCode.AlreadyExists)
+            {
+                return null;
+            }
         }
 
         public async Task<bool> DeleteCategoryAsync(string userId, string categoryId)

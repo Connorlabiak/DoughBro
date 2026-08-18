@@ -20,13 +20,13 @@ namespace DoughBro.src.Repositories.Interfaces
         Task<CategoryModel?> AddCategoryAsync(string userId, CategoryModel category);
 
         /// <summary>
-        /// Updates a category name for the authenticated user.
+        /// Updates a category for the authenticated user and reserves its selected color.
         /// </summary>
         /// <param name="userId">The authenticated Firebase user ID.</param>
         /// <param name="categoryId">The category document ID.</param>
-        /// <param name="name">The updated category name.</param>
+        /// <param name="category">The updated category model.</param>
         /// <returns>The updated category, or null if it does not exist.</returns>
-        Task<CategoryModel?> UpdateCategoryNameAsync(string userId, string categoryId, string name);
+        Task<CategoryModel?> UpdateCategoryAsync(string userId, string categoryId, CategoryModel category);
 
         /// <summary>
         /// Deletes a category and releases its color for the authenticated user.

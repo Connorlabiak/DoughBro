@@ -8,12 +8,12 @@ namespace DoughBro.src.Services
     public class CategoryService : ICategoryService
     {
         private readonly ICategoryRepository _categoryRepository;
-        private readonly ITransactionRepository _transactionRepository;
+        private readonly ITransactionService _transactionService;
 
-        public CategoryService(ICategoryRepository categoryRepository, ITransactionRepository transactionRepository)
+        public CategoryService(ICategoryRepository categoryRepository, ITransactionService transactionService)
         {
             _categoryRepository = categoryRepository;
-            _transactionRepository = transactionRepository;
+            _transactionService = transactionService;
         }
 
         public async Task<IEnumerable<CategoryDto>> GetCategoriesAsync(string userId)
@@ -76,36 +76,50 @@ namespace DoughBro.src.Services
         public async Task<CategoryDto?> UpdateCategoryAsync(string userId, string categoryId, UpdateCategoryRequest request)
         {
             string name = request.Name.Trim();
+            string colorId = request.ColorId.Trim().ToLowerInvariant();
             if (string.IsNullOrWhiteSpace(name))
             {
                 throw new ArgumentException("Category name is required.");
             }
 
-            CategoryModel? category = await _categoryRepository.UpdateCategoryNameAsync(userId, categoryId, name);
-            return category is null ? null : ToDto(category);
-        }
-
-        public async Task<IEnumerable<TransactionDto>> GetCategoryTransactionsAsync(string userId, string categoryId)
-        {
-            IEnumerable<TransactionModel> transactions = await _transactionRepository.GetTransactionsByCategoryAsync(userId, categoryId);
-            return transactions.Select(transaction => new TransactionDto
+            CategoryColorModel? color = CategoryPalette.FindById(colorId);
+            if (color is null)
             {
-                Id = transaction.Id,
-                Origin = transaction.Origin,
-                UserId = transaction.UserId,
-                Name = transaction.Name,
-                Date = transaction.Date,
-                Amount = transaction.Amount,
-                Description = transaction.Description,
-                IsPending = transaction.IsPending,
-                MerchantName = transaction.MerchantName,
-                Category = transaction.Category,
+                throw new ArgumentException("Selected category color is not supported.");
+            }
+
+            IEnumerable<CategoryModel> categories = await _categoryRepository.GetCategoriesAsync(userId);
+            CategoryModel? existingCategory = categories.FirstOrDefault(category => category.Id == categoryId);
+            if (existingCategory is null)
+            {
+                return null;
+            }
+
+            ISet<string> usedColorIds = await _categoryRepository.GetUsedCategoryColorIdsAsync(userId);
+            if (!string.Equals(existingCategory.ColorId, color.Id, StringComparison.OrdinalIgnoreCase) && usedColorIds.Contains(color.Id))
+            {
+                throw new InvalidOperationException("Selected category color is already in use.");
+            }
+
+            CategoryModel? category = await _categoryRepository.UpdateCategoryAsync(userId, categoryId, new CategoryModel
+            {
+                UserId = userId,
+                Name = name,
+                ColorId = color.Id,
+                Color = color.Hex,
             });
+            return category is null ? null : ToDto(category);
         }
 
         public async Task<bool> DeleteCategoryAsync(string userId, string categoryId)
         {
-            await _transactionRepository.ClearCategoryAsync(userId, categoryId);
+            IEnumerable<CategoryModel> categories = await _categoryRepository.GetCategoriesAsync(userId);
+            if (!categories.Any(category => category.Id == categoryId))
+            {
+                return false;
+            }
+
+            await _transactionService.ClearCategoryAsync(userId, categoryId);
             return await _categoryRepository.DeleteCategoryAsync(userId, categoryId);
         }
 

@@ -15,5 +15,8 @@ namespace DoughBro.src.DTOs
     {
         [JsonPropertyName("name")]
         public required string Name { get; set; }
+
+        [JsonPropertyName("colorId")]
+        public required string ColorId { get; set; }
     }
 }

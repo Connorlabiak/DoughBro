@@ -2,8 +2,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { getCategoryColorClasses } from "@/lib/categoryColors";
 import { cn } from "@/lib/utils";
-import { deleteCategory, getCategoryTransactions, updateCategory } from "@/services/categoryService";
-import type { Category, Transaction } from "@/types/api";
+import { deleteCategory, getCategoryColors, updateCategory } from "@/services/categoryService";
+import { getTransactionsByCategory } from "@/services/transactionService";
+import type { Category, CategoryColor, Transaction } from "@/types/api";
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 
@@ -16,20 +17,26 @@ interface CategoryDetailsModalProps {
 
 export function CategoryDetailsModal({ category, onClose, onCategoryUpdated, onCategoryDeleted }: CategoryDetailsModalProps) {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [colors, setColors] = useState<CategoryColor[]>([]);
     const [name, setName] = useState(category.name);
+    const [selectedColorId, setSelectedColorId] = useState(category.colorId);
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const loadTransactions = async () => {
+        const loadModalData = async () => {
             setIsLoading(true);
             setError(null);
 
             try {
-                const result = await getCategoryTransactions(category.id);
-                setTransactions(result.sort((a, b) => b.date.localeCompare(a.date)));
+                const [transactionResult, colorResult] = await Promise.all([
+                    getTransactionsByCategory(category.id),
+                    getCategoryColors(),
+                ]);
+                setTransactions(transactionResult.sort((a, b) => b.date.localeCompare(a.date)));
+                setColors(colorResult);
             } catch (err) {
                 console.error("Failed to load category transactions:", err);
                 setError("Could not load this category's transactions.");
@@ -38,7 +45,7 @@ export function CategoryDetailsModal({ category, onClose, onCategoryUpdated, onC
             }
         };
 
-        void loadTransactions();
+        void loadModalData();
     }, [category.id]);
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -51,7 +58,7 @@ export function CategoryDetailsModal({ category, onClose, onCategoryUpdated, onC
         setIsSaving(true);
         setError(null);
         try {
-            const updatedCategory = await updateCategory(category.id, { name: name.trim() });
+            const updatedCategory = await updateCategory(category.id, { name: name.trim(), colorId: selectedColorId });
             onCategoryUpdated(updatedCategory);
         } catch (err) {
             console.error("Failed to update category:", err);
@@ -80,7 +87,7 @@ export function CategoryDetailsModal({ category, onClose, onCategoryUpdated, onC
     };
 
     const isBusy = isSaving || isDeleting;
-    const colorClasses = getCategoryColorClasses(category.colorId);
+    const colorClasses = getCategoryColorClasses(selectedColorId);
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/50 p-4" role="dialog" aria-modal="true" aria-labelledby="category-details-title">
@@ -94,12 +101,43 @@ export function CategoryDetailsModal({ category, onClose, onCategoryUpdated, onC
                 </div>
 
                 <div className="overflow-y-auto p-6">
-                    <form onSubmit={handleSubmit} className="mb-6 flex gap-3 border-b border-zinc-200 pb-6">
-                        <div className="min-w-0 flex-1">
+                    <form onSubmit={handleSubmit} className="mb-6 border-b border-zinc-200 pb-6">
+                        <div className="flex gap-3">
+                            <div className="min-w-0 flex-1">
                             <label className="mb-2 block text-sm font-semibold text-zinc-700" htmlFor="edit-category-name">Category Name</label>
                             <Input id="edit-category-name" value={name} onChange={(event) => setName(event.target.value)} disabled={isBusy} required />
+                            </div>
+                            <Button type="submit" className="mt-7" disabled={isBusy}>{isSaving ? "Saving..." : "Save"}</Button>
                         </div>
-                        <Button type="submit" className="mt-7" disabled={isBusy}>{isSaving ? "Saving..." : "Save"}</Button>
+
+                        <fieldset className="mt-5">
+                            <legend className="mb-3 text-sm font-semibold text-zinc-700">Color</legend>
+                            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                                {colors.map((color) => {
+                                    const isSelected = selectedColorId === color.id;
+                                    const isUnavailable = color.isUsed && color.id !== category.colorId;
+                                    const optionClasses = getCategoryColorClasses(color.id);
+
+                                    return (
+                                        <button
+                                            key={color.id}
+                                            type="button"
+                                            disabled={isUnavailable || isBusy}
+                                            onClick={() => setSelectedColorId(color.id)}
+                                            className={cn(
+                                                "flex h-16 flex-col items-center justify-center border-2 text-xs font-semibold transition",
+                                                optionClasses.card,
+                                                isUnavailable ? "cursor-not-allowed opacity-35" : "hover:scale-[1.03]",
+                                                isSelected && `scale-[1.04] shadow-lg ${optionClasses.selected}`,
+                                            )}
+                                        >
+                                            <span className={cn("mb-1 block size-4", optionClasses.swatch)} />
+                                            {color.name}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </fieldset>
                     </form>
 
                     <div className="mb-3 flex items-center justify-between gap-3">
