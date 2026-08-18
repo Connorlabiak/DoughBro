@@ -67,6 +67,39 @@ namespace DoughBro.src.Repositories
             return categories.Select(category => category.ColorId).ToHashSet(StringComparer.OrdinalIgnoreCase);
         }
 
+        public async Task<bool> AddDefaultCategoriesAsync(string userId, IEnumerable<CategoryModel> categories)
+        {
+            DocumentReference userRef = _db.Collection("users").Document(userId);
+            DocumentReference initializationRef = userRef.Collection("category_defaults").Document("initialized");
+            WriteBatch batch = _db.StartBatch();
+            batch.Create(initializationRef, new Dictionary<string, object>
+            {
+                ["CreatedAt"] = Timestamp.GetCurrentTimestamp(),
+            });
+
+            foreach (CategoryModel category in categories)
+            {
+                DocumentReference categoryRef = userRef.Collection("categories").Document();
+                category.Id = categoryRef.Id;
+                batch.Set(categoryRef, category);
+                batch.Create(userRef.Collection("category_color_usage").Document(category.ColorId), new Dictionary<string, object>
+                {
+                    ["ColorId"] = category.ColorId,
+                    ["CreatedAt"] = Timestamp.GetCurrentTimestamp(),
+                });
+            }
+
+            try
+            {
+                await batch.CommitAsync();
+                return true;
+            }
+            catch (RpcException ex) when (ex.StatusCode == StatusCode.AlreadyExists)
+            {
+                return false;
+            }
+        }
+
         public async Task<CategoryModel?> UpdateCategoryAsync(string userId, string categoryId, CategoryModel category)
         {
             DocumentReference userRef = _db.Collection("users").Document(userId);

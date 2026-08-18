@@ -7,6 +7,18 @@ namespace DoughBro.src.Services
 {
     public class CategoryService : ICategoryService
     {
+        private static readonly (string Name, string ColorId)[] DefaultCategories =
+        [
+            ("Gas", "amber"),
+            ("Eating Out", "teal"),
+            ("Groceries", "green"),
+            ("Other", "stone"),
+            ("Rent", "tomato"),
+            ("Entertainment", "lime"),
+            ("Subscriptions", "blue"),
+            ("Utilities", "yellow"),
+        ];
+
         private readonly ICategoryRepository _categoryRepository;
         private readonly ITransactionService _transactionService;
 
@@ -71,6 +83,29 @@ namespace DoughBro.src.Services
             }
 
             return ToDto(category);
+        }
+
+        public async Task EnsureDefaultCategoriesAsync(string userId)
+        {
+            IEnumerable<CategoryModel> existingCategories = await _categoryRepository.GetCategoriesAsync(userId);
+            if (existingCategories.Any())
+            {
+                return;
+            }
+
+            IEnumerable<CategoryModel> defaultCategories = DefaultCategories.Select(defaultCategory =>
+            {
+                CategoryColorModel color = CategoryPalette.FindById(defaultCategory.ColorId)!;
+                return new CategoryModel
+                {
+                    UserId = userId,
+                    Name = defaultCategory.Name,
+                    ColorId = color.Id,
+                    Color = color.Hex,
+                };
+            });
+
+            await _categoryRepository.AddDefaultCategoriesAsync(userId, defaultCategories);
         }
 
         public async Task<CategoryDto?> UpdateCategoryAsync(string userId, string categoryId, UpdateCategoryRequest request)

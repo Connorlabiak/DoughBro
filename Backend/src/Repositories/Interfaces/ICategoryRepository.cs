@@ -20,6 +20,14 @@ namespace DoughBro.src.Repositories.Interfaces
         Task<CategoryModel?> AddCategoryAsync(string userId, CategoryModel category);
 
         /// <summary>
+        /// Adds the default categories for a user with no existing categories.
+        /// </summary>
+        /// <param name="userId">The authenticated Firebase user ID.</param>
+        /// <param name="categories">The default category models to add.</param>
+        /// <returns>True when the defaults were added; otherwise, false.</returns>
+        Task<bool> AddDefaultCategoriesAsync(string userId, IEnumerable<CategoryModel> categories);
+
+        /// <summary>
         /// Updates a category for the authenticated user and reserves its selected color.
         /// </summary>
         /// <param name="userId">The authenticated Firebase user ID.</param>

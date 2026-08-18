@@ -44,6 +44,19 @@ namespace DoughBro.src.Controllers
             return Ok(colors);
         }
 
+        [HttpPost("initialize")]
+        public async Task<IActionResult> InitializeDefaultCategories()
+        {
+            string? userId = User.GetUserId();
+            if (userId is null)
+            {
+                return Unauthorized("User ID not found in claims");
+            }
+
+            await _categoryService.EnsureDefaultCategoriesAsync(userId);
+            return NoContent();
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddCategory([FromBody] CreateCategoryRequest request)
         {

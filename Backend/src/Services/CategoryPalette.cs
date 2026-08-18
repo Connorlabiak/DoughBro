@@ -15,7 +15,7 @@ namespace DoughBro.src.Services
             new() { Id = "sky", Name = "Sky", Hex = "#0ea5e9" },
             new() { Id = "cyan", Name = "Cyan", Hex = "#06b6d4" },
             new() { Id = "teal", Name = "Teal", Hex = "#14b8a6" },
-            new() { Id = "emerald", Name = "Emerald", Hex = "#10b981" },
+            new() { Id = "yellow", Name = "Yellow", Hex = "#eab308" },
             new() { Id = "green", Name = "Green", Hex = "#22c55e" },
             new() { Id = "lime", Name = "Lime", Hex = "#84cc16" },
             new() { Id = "amber", Name = "Amber", Hex = "#f59e0b" },

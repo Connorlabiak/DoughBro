@@ -22,6 +22,7 @@ export default function Dashboard() {
     const [activeTransactionId, setActiveTransactionId] = useState<string | null>(null);
     const [hoveredCategoryId, setHoveredCategoryId] = useState<string | null>(null);
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+    const [categoryPage, setCategoryPage] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [isUpdating, setIsUpdating] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -33,6 +34,8 @@ export default function Dashboard() {
 
     const activeTransaction = uncategorizedTransactions[0];
     const categorizedCount = transactions.length - uncategorizedTransactions.length;
+    const categoryPageCount = Math.ceil(categories.length / 8);
+    const visibleCategories = categories.slice(categoryPage * 8, (categoryPage + 1) * 8);
 
     const loadDashboardData = async () => {
         setIsLoading(true);
@@ -43,7 +46,7 @@ export default function Dashboard() {
                 getCategories(),
                 getTransactions(100),
             ]);
-            setCategories(categoryResult.slice(0, 8));
+            setCategories(categoryResult);
             setTransactions(transactionResult);
         } catch (err) {
             console.error("Failed to load dashboard data:", err);
@@ -56,6 +59,10 @@ export default function Dashboard() {
     useEffect(() => {
         void loadDashboardData();
     }, []);
+
+    useEffect(() => {
+        setCategoryPage((currentPage) => Math.min(currentPage, Math.max(categoryPageCount - 1, 0)));
+    }, [categoryPageCount]);
 
     const handleDragStart = (event: DragEvent<HTMLDivElement>, transactionId?: string) => {
         if (!transactionId || isUpdating) {
@@ -178,7 +185,7 @@ export default function Dashboard() {
                 </section>
 
                 <section className="grid grid-cols-2 gap-4 md:grid-cols-4 xl:grid-rows-2">
-                    {categories.map((category) => {
+                    {visibleCategories.map((category) => {
                         const isHovered = hoveredCategoryId === category.id;
                         const colorClasses = getCategoryColorClasses(category.colorId);
 
@@ -203,6 +210,18 @@ export default function Dashboard() {
                     })}
                 </section>
             </main>
+
+            {categoryPageCount > 1 && (
+                <Button
+                    type="button"
+                    size="icon"
+                    aria-label={categoryPage === 0 ? "Show more categories" : "Show previous categories"}
+                    onClick={() => setCategoryPage((currentPage) => currentPage === 0 ? 1 : 0)}
+                    className="fixed bottom-6 right-6 z-40 rounded-full shadow-xl transition-all duration-200 hover:scale-110"
+                >
+                    <span className="text-lg leading-none" aria-hidden="true">{categoryPage === 0 ? "→" : "←"}</span>
+                </Button>
+            )}
 
             {selectedCategory && (
                 <CategoryDetailsModal

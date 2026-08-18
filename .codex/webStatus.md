@@ -3,6 +3,7 @@
 ## Currently Working On
 
 ## Recently Completed
+- [x] Added default category initialization and dashboard category paging.
 - [x] Added color selection to the shared category details modal.
 - [x] Added shared category details modal with transaction history, renaming, and deletion.
 - [x] Added category management page with category list and add-category modal.

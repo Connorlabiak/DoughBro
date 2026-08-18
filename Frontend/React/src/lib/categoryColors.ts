@@ -44,10 +44,10 @@ export const CATEGORY_COLOR_CLASSES = {
         selected: "border-teal-500 bg-teal-500/20 shadow-teal-500/30",
         swatch: "bg-teal-500",
     },
-    emerald: {
-        card: "border-emerald-500 bg-emerald-500/15 shadow-emerald-500/20",
-        selected: "border-emerald-500 bg-emerald-500/20 shadow-emerald-500/30",
-        swatch: "bg-emerald-500",
+    yellow: {
+        card: "border-yellow-500 bg-yellow-500/15 shadow-yellow-500/20",
+        selected: "border-yellow-500 bg-yellow-500/20 shadow-yellow-500/30",
+        swatch: "bg-yellow-500",
     },
     green: {
         card: "border-green-500 bg-green-500/15 shadow-green-500/20",

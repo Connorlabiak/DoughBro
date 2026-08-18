@@ -27,6 +27,13 @@ namespace DoughBro.src.Services.Interfaces
         Task<CategoryDto> AddCategoryAsync(string userId, CreateCategoryRequest request);
 
         /// <summary>
+        /// Adds the default categories when the authenticated user has none.
+        /// </summary>
+        /// <param name="userId">The authenticated Firebase user ID.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        Task EnsureDefaultCategoriesAsync(string userId);
+
+        /// <summary>
         /// Updates a category name for the authenticated user.
         /// </summary>
         /// <param name="userId">The authenticated Firebase user ID.</param>

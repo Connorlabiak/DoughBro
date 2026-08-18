@@ -9,6 +9,12 @@ export function getCategoryColors() {
     return apiFetch<CategoryColor[]>("/api/categories/colors");
 }
 
+export function initializeDefaultCategories() {
+    return apiFetch<void>("/api/categories/initialize", {
+        method: "POST",
+    });
+}
+
 export function createCategory(request: CreateCategoryRequest) {
     return apiFetch<Category>("/api/categories", {
         method: "POST",

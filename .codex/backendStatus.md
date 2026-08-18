@@ -3,6 +3,7 @@
 ## Currently Working On
 
 ## Recently Completed
+- [x] Added idempotent default category initialization for new accounts.
 - [x] Moved category transaction work behind the transaction service and added category color updates.
 - [x] Added category editing, transaction lookup, and deletion with transaction category cleanup.
 - [x] Added Firestore-backed user category creation and retrieval APIs.
