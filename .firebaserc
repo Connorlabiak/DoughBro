@@ -1,0 +1,23 @@
+{
+  "projects": {
+    "development": "doughbro",
+    "production": "doughbro-prod"
+  },
+  "targets": {
+    "doughbro": {
+      "hosting": {
+        "dev-site": [
+          "doughbro"
+        ]
+      }
+    },
+    "doughbro-prod": {
+      "hosting": {
+        "prod-site": [
+          "doughbro-prod"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

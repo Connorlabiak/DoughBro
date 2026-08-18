@@ -1,0 +1,56 @@
+{
+  "firestore": {
+    "database": "(default)",
+    "location": "nam5",
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "hosting": [
+    {
+      "target": "dev-site",
+      "public": "Frontend/React/dist",
+      "ignore": [ "firebase.json", "**/.*" ],
+      "rewrites": [
+        {
+          "source": "/api/**",
+          "run": {
+            "serviceId": "doughbro-backend-dev",
+            "region": "us-central1"
+          }
+        },
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+
+      ]
+    },
+    {
+      "target": "prod-site",
+      "public": "Frontend/React/dist",
+      "ignore": [ "firebase.json", "**/.*" ],
+      "rewrites": [
+        {
+          "source": "/api/**",
+          "run": {
+            "serviceId": "doughbro-backend-prod",
+            "region": "us-central1"
+          }
+        },
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "providers": {
+      "emailPassword": true,
+      "googleSignIn": {
+        "oAuthBrandDisplayName": "DoughBro",
+        "supportEmail": "connorlabiak@gmail.com"
+      }
+    }
+  }
+}

@@ -21,12 +21,27 @@
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
       "environmentVariables": {
         "ASPNETCORE_HTTPS_PORTS": "8081",
-        "ASPNETCORE_HTTP_PORTS": "8080"
+        "ASPNETCORE_HTTP_PORTS": "8080",
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Firebase__project_id": "doughbro",
+        "Plaid__ClientId": "68ba5624ed9295002480af09",
+        "Plaid__Environment": "sandbox",
+        "Plaid__Secret": "2b70752d705acca4fce362dc319a9a",
+        "GOOGLE_APPLICATION_CREDENTIALS": "/app/secrets/doughbro-dev-key.json"
       },
       "publishAllPorts": true,
       "useSSL": true,
-      "httpPort": 5500,
-      "sslPort": 5501
+      "httpPort": 8080,
+      "sslPort": 8081,
+      "localServices": {
+        "volumes": [
+          {
+            "containerPath": "/app/secrets/doughbro-dev-key.json",
+            "hostPath": "C:\\Keys\\doughbro-dev-key.json",
+            "readOnly": true
+          }
+        ]
+      }
     }
   },
   "$schema": "https://json.schemastore.org/launchsettings.json"

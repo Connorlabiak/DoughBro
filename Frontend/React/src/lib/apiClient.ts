@@ -1,7 +1,5 @@
 import { getAuth } from "firebase/auth";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
 export async function apiFetch<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const auth = getAuth();
     const user = auth.currentUser;
@@ -14,7 +12,7 @@ export async function apiFetch<T>(endpoint: string, options: RequestInit = {}): 
         headers.set("Authorization", `Bearer ${token}`);
     }
 
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    const response = await fetch(`${endpoint}`, {
         ...options,
         headers,
     });
