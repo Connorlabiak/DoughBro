@@ -2,10 +2,12 @@ import { useActionState, useState, useTransition } from "react";
 import {
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
-    signInWithPopup
+    getAdditionalUserInfo,
+    signInWithPopup,
 } from "firebase/auth";
 import type { AuthError } from "firebase/auth";
 import { auth, googleProvider } from "@/firebase/firebase";
+import { initializeDefaultCategories } from "@/services/categoryService";
 
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -45,6 +47,7 @@ export default function Login({ onSuccess }: LoginProps) {
             try {
                 if (isSignUp) {
                     await createUserWithEmailAndPassword(auth, email, password);
+                    await initializeDefaultCategories();
                 } else {
                     await signInWithEmailAndPassword(auth, email, password);
                 }
@@ -61,7 +64,10 @@ export default function Login({ onSuccess }: LoginProps) {
     const handleGoogleSignIn = () => {
         startGoogleTransition(async () => {
             try {
-                await signInWithPopup(auth, googleProvider);
+                const credential = await signInWithPopup(auth, googleProvider);
+                if (getAdditionalUserInfo(credential)?.isNewUser) {
+                    await initializeDefaultCategories();
+                }
                 onSuccess?.();
             } catch (err) {
                 const authError = err as AuthError;

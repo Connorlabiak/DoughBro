@@ -3,6 +3,7 @@
 ## Currently Working On
 
 ## Recently Completed
+- [x] Seed default categories at account creation and improved dashboard category paging controls.
 - [x] Added default category initialization and dashboard category paging.
 - [x] Added color selection to the shared category details modal.
 - [x] Added shared category details modal with transaction history, renaming, and deletion.

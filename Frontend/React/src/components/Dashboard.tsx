@@ -214,12 +214,12 @@ export default function Dashboard() {
             {categoryPageCount > 1 && (
                 <Button
                     type="button"
-                    size="icon"
                     aria-label={categoryPage === 0 ? "Show more categories" : "Show previous categories"}
                     onClick={() => setCategoryPage((currentPage) => currentPage === 0 ? 1 : 0)}
-                    className="fixed bottom-6 right-6 z-40 rounded-full shadow-xl transition-all duration-200 hover:scale-110"
+                    className="fixed bottom-6 right-6 z-40 h-14 rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 px-6 text-sm text-white shadow-xl shadow-fuchsia-500/40 transition-all duration-200 hover:scale-105 hover:from-violet-500 hover:to-fuchsia-400"
                 >
-                    <span className="text-lg leading-none" aria-hidden="true">{categoryPage === 0 ? "→" : "←"}</span>
+                    <span>{categoryPage === 0 ? "More Categories" : "Back to Categories"}</span>
+                    <span className="text-xl leading-none" aria-hidden="true">{categoryPage === 0 ? "→" : "←"}</span>
                 </Button>
             )}
 
