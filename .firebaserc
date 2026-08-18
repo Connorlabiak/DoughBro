@@ -8,6 +8,9 @@
       "hosting": {
         "dev-site": [
           "doughbro"
+        ],
+        "prod-site": [
+          "/Frontend/React/dist"
         ]
       }
     },
