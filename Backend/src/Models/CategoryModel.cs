@@ -9,7 +9,13 @@ namespace DoughBro.src.Models
         public string? Id { get; set; }
 
         [FirestoreProperty]
+        public required string UserId { get; set; }
+
+        [FirestoreProperty]
         public required string Name { get; set; }
+
+        [FirestoreProperty]
+        public required string ColorId { get; set; }
 
         [FirestoreProperty]
         public required string Color { get; set; }

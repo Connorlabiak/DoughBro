@@ -3,6 +3,13 @@
 ## Currently Working On
 
 ## Recently Completed
+- [x] Seed default categories only for newly created Firebase accounts.
+- [x] Added idempotent default category initialization for new accounts.
+- [x] Moved category transaction work behind the transaction service and added category color updates.
+- [x] Added category editing, transaction lookup, and deletion with transaction category cleanup.
+- [x] Added Firestore-backed user category creation and retrieval APIs.
+- [x] Added standardized category color palette API with per-user usage tracking.
+- [x] Added atomic category creation/color reservation using user color usage documents.
 - [x] Removed non-implemented transaction service methods from interfaces and classes.
 - [x] Removed missing category service/repository registrations from backend DI.
 - [x] Added XML comments for backend service and repository interface methods.
@@ -14,10 +21,11 @@
 - [x] Defined data structures for transactions and user. 
 
 ## Active Technical Stack & State
-- **Current Database Collections:** `users`, `transactions`
+- **Current Database Collections:** `users`, `transactions`, `categories`, `category_color_usage`
 - **Auth Flow:** Frontend gets JWT from Firebase -> Sends in `Authorization: Bearer <token>` header -> Backend validates UID.
 - **TransactionSync Flow:** Plaid API -> Backend -> Firestore `transactions` collection.
 - **Transaction Retrieval Flow:** Frontend -> Backend -> Firestore `transactions` collection.
+- **Category Management Flow:** Frontend -> Backend -> Firestore user `categories` and `category_color_usage` collections.
 
 ## Known Bugs / Tech Debt
 - Need to implement Plaid webhook handler for real-time transaction updates.

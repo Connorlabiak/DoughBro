@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace DoughBro.src.DTOs
 {
-    public class CategoryDto
+    public class CategoryColorDto
     {
         [JsonPropertyName("id")]
         public required string Id { get; set; }
@@ -10,10 +10,10 @@ namespace DoughBro.src.DTOs
         [JsonPropertyName("name")]
         public required string Name { get; set; }
 
-        [JsonPropertyName("colorId")]
-        public required string ColorId { get; set; }
+        [JsonPropertyName("hex")]
+        public required string Hex { get; set; }
 
-        [JsonPropertyName("color")]
-        public required string Color { get; set; }
+        [JsonPropertyName("isUsed")]
+        public required bool IsUsed { get; set; }
     }
 }

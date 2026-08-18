@@ -38,7 +38,7 @@ All backend features must adhere to a strict 3-layer pattern:
 
 ## 4. Deployment & Environment
 - Solution should work on local environment and be deployable to Google Cloud Run
-- Secrets stored by human devs in secrets.json locally and in Google Secret Manager for production.
+- Secrets stored by human devs in secrets.json locally and in Google Secret Manager for deployment.
 - Solution deployed from GitHub Actions CI/CD pipeline to Google Cloud Run in Docker container.
 
 ## 5. General Output Rules for Codex (ALWAYS FOLLOW)

@@ -11,6 +11,10 @@ export function getTransactions(limit = 50) {
     return apiFetch<Transaction[]>(`/api/transactions/get?limit=${limit}`);
 }
 
+export function getTransactionsByCategory(categoryId: string) {
+    return apiFetch<Transaction[]>(`/api/transactions/category/${categoryId}`);
+}
+
 export function updateTransactionCategory(transactionId: string, category: string) {
     const body: UpdateTransactionCategoryRequest = { category };
 
