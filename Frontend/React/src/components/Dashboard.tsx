@@ -13,8 +13,10 @@ import { cn } from "@/lib/utils";
 import { getCategories } from "@/services/categoryService";
 import { getTransactions, updateTransaction } from "@/services/transactionService";
 import { Input } from "@/components/ui/input";
+import { RiEyeOffLine } from "@remixicon/react";
 
 const UNCATEGORIZED_VALUES = new Set([undefined, null, "", "unsorted"]);
+const HIDDEN_CATEGORY_NAME = "Hidden";
 
 interface TransactionDraft {
     name: string;
@@ -44,8 +46,10 @@ export default function Dashboard() {
 
     const activeTransaction = uncategorizedTransactions[0];
     const categorizedCount = transactions.length - uncategorizedTransactions.length;
-    const categoryPageCount = Math.ceil(categories.length / 8);
-    const visibleCategories = categories.slice(categoryPage * 8, (categoryPage + 1) * 8);
+    const hiddenCategory = categories.find((category) => category.name === HIDDEN_CATEGORY_NAME);
+    const regularCategories = categories.filter((category) => category.name !== HIDDEN_CATEGORY_NAME);
+    const categoryPageCount = Math.ceil(regularCategories.length / 8);
+    const visibleCategories = regularCategories.slice(categoryPage * 8, (categoryPage + 1) * 8);
 
     const loadDashboardData = async () => {
         setIsLoading(true);
@@ -184,7 +188,7 @@ export default function Dashboard() {
             </header>
 
             <main className="grid min-h-[calc(100vh-81px)] grid-cols-1 gap-6 p-6 xl:grid-cols-[minmax(320px,420px)_1fr]">
-                <section className="flex min-h-[360px] flex-col justify-center border border-zinc-200 bg-white p-5">
+                <section className="relative min-h-[360px] border border-zinc-200 bg-white p-5">
                     <div className="mb-5 flex items-center justify-between">
                         <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">Next Transaction</h2>
                         {isUpdating && <span className="text-xs font-medium uppercase tracking-wide text-zinc-500">Saving</span>}
@@ -199,7 +203,7 @@ export default function Dashboard() {
                             draggable={!isUpdating}
                             onDragStart={(event) => handleDragStart(event, activeTransaction.id)}
                             onDragEnd={handleDragEnd}
-                            className="cursor-grab border border-zinc-300 bg-zinc-950 p-5 text-white shadow-lg transition duration-150 ease-out active:scale-[0.99] active:cursor-grabbing active:opacity-95"
+                            className="w-full max-w-md cursor-grab border border-zinc-300 bg-zinc-950 p-5 text-white shadow-lg transition duration-150 ease-out active:scale-[0.99] active:cursor-grabbing active:opacity-95"
                         >
                             <div className="mb-8 flex items-start justify-between gap-4">
                                 <div className="min-w-0">
@@ -208,7 +212,7 @@ export default function Dashboard() {
                                         value={transactionDraft.merchantName}
                                         placeholder="Merchant"
                                         onChange={(event) => setTransactionDraft((current) => current && { ...current, merchantName: event.target.value })}
-                                        className="h-auto truncate border-transparent text-xl font-semibold text-white placeholder:text-zinc-400 focus-visible:border-white"
+                                        className="h-auto truncate border-transparent text-xl font-semibold text-white placeholder:text-zinc-400 focus-visible:border-white md:text-xl"
                                     />
                                     <Input
                                         aria-label="Transaction name"
@@ -224,7 +228,7 @@ export default function Dashboard() {
                                         className="mt-2 h-auto border-transparent text-sm text-zinc-300 placeholder:text-zinc-500 focus-visible:border-white"
                                     />
                                 </div>
-                                <div className="flex shrink-0 items-center gap-1 text-xl font-semibold">
+                                <div className="flex shrink-0 items-center text-xl font-semibold">
                                     <span aria-hidden="true">$</span>
                                     <Input
                                         aria-label="Amount"
@@ -234,7 +238,7 @@ export default function Dashboard() {
                                         step="0.01"
                                         value={transactionDraft.amount}
                                         onChange={(event) => setTransactionDraft((current) => current && { ...current, amount: event.target.value })}
-                                        className="h-auto w-28 border-transparent text-right text-xl font-semibold text-white focus-visible:border-white"
+                                        className="h-auto w-20 border-transparent text-left text-xl font-semibold text-white focus-visible:border-white md:text-xl"
                                     />
                                 </div>
                             </div>
@@ -253,6 +257,22 @@ export default function Dashboard() {
                     )}
 
                     {error && <p className="mt-4 text-sm font-medium text-red-600">{error}</p>}
+
+                    {hiddenCategory && (
+                        <div
+                            onDragEnter={() => setHoveredCategoryId(hiddenCategory.id)}
+                            onDragOver={(event) => handleDragOver(event, hiddenCategory.id)}
+                            onDragLeave={(event) => handleDragLeave(event, hiddenCategory.id)}
+                            onDrop={(event) => handleDrop(event, hiddenCategory)}
+                            className={cn(
+                                "absolute inset-x-0 bottom-5 flex flex-col items-center justify-center text-zinc-400 transition-all duration-150 ease-out",
+                                hoveredCategoryId === hiddenCategory.id ? "scale-110 text-zinc-950" : "hover:scale-105 hover:text-zinc-700",
+                            )}
+                        >
+                            <RiEyeOffLine className="size-14" aria-hidden="true" />
+                            <span className="mt-1 text-xs font-semibold uppercase tracking-[0.2em]">Hide transaction</span>
+                        </div>
+                    )}
                 </section>
 
                 <section className="grid grid-cols-2 gap-4 md:grid-cols-4 xl:grid-rows-2">

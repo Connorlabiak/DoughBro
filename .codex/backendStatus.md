@@ -3,6 +3,7 @@
 ## Currently Working On
 
 ## Recently Completed
+- [x] Added the dark-gray Hidden category to default user category initialization.
 - [x] Added authorized transaction detail/category upsert for categorization drops.
 - [x] Seed default categories only for newly created Firebase accounts.
 - [x] Added idempotent default category initialization for new accounts.

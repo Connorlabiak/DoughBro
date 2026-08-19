@@ -22,6 +22,7 @@ namespace DoughBro.src.Services
             new() { Id = "orange", Name = "Orange", Hex = "#f97316" },
             new() { Id = "slate", Name = "Slate", Hex = "#64748b" },
             new() { Id = "stone", Name = "Stone", Hex = "#78716c" },
+            new() { Id = "charcoal", Name = "Charcoal", Hex = "#3f3f46" },
         };
 
         public static CategoryColorModel? FindById(string colorId)

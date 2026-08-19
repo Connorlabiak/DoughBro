@@ -17,6 +17,7 @@ namespace DoughBro.src.Services
             ("Entertainment", "lime"),
             ("Subscriptions", "blue"),
             ("Utilities", "yellow"),
+            ("Hidden", "charcoal"),
         ];
 
         private readonly ICategoryRepository _categoryRepository;

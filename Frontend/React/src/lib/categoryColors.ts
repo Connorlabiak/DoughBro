@@ -95,6 +95,12 @@ export const CATEGORY_COLOR_CLASSES = {
         selected: "border-stone-500 bg-stone-500/20 shadow-stone-500/30",
         swatch: "bg-stone-500",
     },
+    charcoal: {
+        accent: "bg-zinc-800",
+        card: "border-zinc-800 bg-zinc-800/15 shadow-zinc-800/20",
+        selected: "border-zinc-800 bg-zinc-800/20 shadow-zinc-800/30",
+        swatch: "bg-zinc-800",
+    },
 } as const;
 
 export type CategoryColorId = keyof typeof CATEGORY_COLOR_CLASSES;

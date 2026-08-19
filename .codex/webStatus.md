@@ -3,6 +3,7 @@
 ## Currently Working On
 
 ## Recently Completed
+- [x] Added a hidden-transaction drop target and corrected transaction card layout and typography.
 - [x] Standardized the dashboard around a minimalist white, black, and purple accent palette.
 - [x] Added local transaction card editing with deferred persistence on category drop.
 - [x] Seed default categories at account creation and improved dashboard category paging controls.
