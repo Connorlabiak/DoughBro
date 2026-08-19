@@ -29,13 +29,13 @@ namespace DoughBro.src.Repositories.Interfaces
         Task<IEnumerable<TransactionModel>> GetAllTransactions(string userId, int limit);
 
         /// <summary>
-        /// Updates a transaction category for the authenticated user.
+        /// Upserts the editable fields and category for the authenticated user's transaction.
         /// </summary>
         /// <param name="userId">The authenticated Firebase user ID.</param>
         /// <param name="transactionId">The transaction document ID.</param>
-        /// <param name="category">The category to assign.</param>
+        /// <param name="transaction">The transaction fields to persist.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        Task UpdateCategoryAsync(string userId, string transactionId, string category);
+        Task UpdateTransactionAsync(string userId, string transactionId, TransactionModel transaction);
 
         /// <summary>
         /// Gets all transactions assigned to a category.

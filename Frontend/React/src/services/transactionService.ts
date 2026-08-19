@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/apiClient";
-import type { SyncTransactionsResponse, Transaction, UpdateTransactionCategoryRequest } from "@/types/api";
+import type { SyncTransactionsResponse, Transaction, UpdateTransactionRequest } from "@/types/api";
 
 export function syncTransactions() {
     return apiFetch<SyncTransactionsResponse>("/api/transactions/sync", {
@@ -15,10 +15,8 @@ export function getTransactionsByCategory(categoryId: string) {
     return apiFetch<Transaction[]>(`/api/transactions/category/${categoryId}`);
 }
 
-export function updateTransactionCategory(transactionId: string, category: string) {
-    const body: UpdateTransactionCategoryRequest = { category };
-
-    return apiFetch<void>(`/api/transactions/${transactionId}/category`, {
+export function updateTransaction(transactionId: string, body: UpdateTransactionRequest) {
+    return apiFetch<void>(`/api/transactions/${transactionId}`, {
         method: "PATCH",
         body: JSON.stringify(body),
     });

@@ -56,3 +56,12 @@ export interface Transaction {
 export interface UpdateTransactionCategoryRequest {
     category: string;
 }
+
+export interface UpdateTransactionRequest {
+    name: string;
+    date: string;
+    amount: number;
+    merchantName?: string | null;
+    description?: string | null;
+    category: string;
+}

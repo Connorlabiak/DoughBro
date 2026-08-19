@@ -11,14 +11,24 @@ import type { Category, Transaction } from "@/types/api";
 import { getCategoryColorClasses } from "@/lib/categoryColors";
 import { cn } from "@/lib/utils";
 import { getCategories } from "@/services/categoryService";
-import { getTransactions, updateTransactionCategory } from "@/services/transactionService";
+import { getTransactions, updateTransaction } from "@/services/transactionService";
+import { Input } from "@/components/ui/input";
 
 const UNCATEGORIZED_VALUES = new Set([undefined, null, "", "unsorted"]);
+
+interface TransactionDraft {
+    name: string;
+    merchantName: string;
+    description: string;
+    amount: string;
+    date: string;
+}
 
 export default function Dashboard() {
     const navigate = useNavigate();
     const [categories, setCategories] = useState<Category[]>([]);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [transactionDraft, setTransactionDraft] = useState<TransactionDraft | null>(null);
     const [activeTransactionId, setActiveTransactionId] = useState<string | null>(null);
     const [hoveredCategoryId, setHoveredCategoryId] = useState<string | null>(null);
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
@@ -64,8 +74,12 @@ export default function Dashboard() {
         setCategoryPage((currentPage) => Math.min(currentPage, Math.max(categoryPageCount - 1, 0)));
     }, [categoryPageCount]);
 
+    useEffect(() => {
+        setTransactionDraft(activeTransaction ? toTransactionDraft(activeTransaction) : null);
+    }, [activeTransaction?.id]);
+
     const handleDragStart = (event: DragEvent<HTMLDivElement>, transactionId?: string) => {
-        if (!transactionId || isUpdating) {
+        if (!transactionId || isUpdating || event.target !== event.currentTarget) {
             event.preventDefault();
             return;
         }
@@ -109,11 +123,36 @@ export default function Dashboard() {
         setError(null);
 
         try {
-            await updateTransactionCategory(transactionId, category.id);
+            if (!transactionDraft || !activeTransaction || transactionId !== activeTransaction.id) {
+                return;
+            }
+
+            const amount = Number(transactionDraft.amount);
+            if (!transactionDraft.name.trim() || !transactionDraft.date || !Number.isFinite(amount)) {
+                setError("Enter a name, valid amount, and date before categorizing this transaction.");
+                return;
+            }
+
+            await updateTransaction(transactionId, {
+                name: transactionDraft.name.trim(),
+                merchantName: transactionDraft.merchantName.trim() || null,
+                description: transactionDraft.description.trim() || null,
+                amount,
+                date: transactionDraft.date,
+                category: category.id,
+            });
             setTransactions((currentTransactions) =>
                 currentTransactions.map((transaction) =>
                     transaction.id === transactionId
-                        ? { ...transaction, category: category.id }
+                        ? {
+                            ...transaction,
+                            name: transactionDraft.name.trim(),
+                            merchantName: transactionDraft.merchantName.trim() || null,
+                            description: transactionDraft.description.trim() || null,
+                            amount,
+                            date: transactionDraft.date,
+                            category: category.id,
+                        }
                         : transaction,
                 ),
             );
@@ -155,7 +194,7 @@ export default function Dashboard() {
                         <div className="border border-dashed border-zinc-300 p-6 text-center text-sm text-zinc-500">
                             Loading transactions...
                         </div>
-                    ) : activeTransaction ? (
+                    ) : activeTransaction && transactionDraft ? (
                         <div
                             draggable={!isUpdating}
                             onDragStart={(event) => handleDragStart(event, activeTransaction.id)}
@@ -164,16 +203,48 @@ export default function Dashboard() {
                         >
                             <div className="mb-8 flex items-start justify-between gap-4">
                                 <div className="min-w-0">
-                                    <p className="truncate text-xl font-semibold">
-                                        {activeTransaction.merchantName || "Unknown Merchant"}
-                                    </p>
-                                    <p className="mt-1 break-words text-sm text-zinc-300">{activeTransaction.name}</p>
+                                    <Input
+                                        aria-label="Merchant"
+                                        value={transactionDraft.merchantName}
+                                        placeholder="Merchant"
+                                        onChange={(event) => setTransactionDraft((current) => current && { ...current, merchantName: event.target.value })}
+                                        className="h-auto truncate border-zinc-600 text-xl font-semibold text-white placeholder:text-zinc-400 focus-visible:border-zinc-300"
+                                    />
+                                    <Input
+                                        aria-label="Transaction name"
+                                        value={transactionDraft.name}
+                                        onChange={(event) => setTransactionDraft((current) => current && { ...current, name: event.target.value })}
+                                        className="mt-2 h-auto border-zinc-700 text-sm text-zinc-300 focus-visible:border-zinc-300"
+                                    />
+                                    <Input
+                                        aria-label="Description"
+                                        value={transactionDraft.description}
+                                        placeholder="Click to add description"
+                                        onChange={(event) => setTransactionDraft((current) => current && { ...current, description: event.target.value })}
+                                        className="mt-2 h-auto border-zinc-700 text-sm text-zinc-300 placeholder:text-zinc-500 focus-visible:border-zinc-300"
+                                    />
                                 </div>
-                                <p className="shrink-0 text-xl font-semibold">
-                                    {formatAmount(activeTransaction.amount)}
-                                </p>
+                                <div className="flex shrink-0 items-center gap-1 text-xl font-semibold">
+                                    <span aria-hidden="true">$</span>
+                                    <Input
+                                        aria-label="Amount"
+                                        type="number"
+                                        inputMode="decimal"
+                                        min="0"
+                                        step="0.01"
+                                        value={transactionDraft.amount}
+                                        onChange={(event) => setTransactionDraft((current) => current && { ...current, amount: event.target.value })}
+                                        className="h-auto w-28 border-zinc-600 text-right text-xl font-semibold text-white focus-visible:border-zinc-300"
+                                    />
+                                </div>
                             </div>
-                            <p className="text-sm font-medium text-zinc-300">{formatDate(activeTransaction.date)}</p>
+                            <Input
+                                aria-label="Transaction date"
+                                type="date"
+                                value={transactionDraft.date}
+                                onChange={(event) => setTransactionDraft((current) => current && { ...current, date: event.target.value })}
+                                className="h-auto w-auto border-zinc-700 text-sm font-medium text-zinc-300 [color-scheme:dark] focus-visible:border-zinc-300"
+                            />
                         </div>
                     ) : (
                         <div className="border border-dashed border-emerald-300 bg-emerald-50 p-6 text-center text-sm font-medium text-emerald-700">
@@ -250,17 +321,12 @@ async function logout() {
     await signOut(auth);
 }
 
-function formatAmount(amount: number) {
-    return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-    }).format(amount);
-}
-
-function formatDate(date: string) {
-    return new Intl.DateTimeFormat("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-    }).format(new Date(`${date}T00:00:00`));
+function toTransactionDraft(transaction: Transaction): TransactionDraft {
+    return {
+        name: transaction.name,
+        merchantName: transaction.merchantName ?? "",
+        description: transaction.description ?? "",
+        amount: transaction.amount.toFixed(2),
+        date: transaction.date,
+    };
 }

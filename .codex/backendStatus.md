@@ -3,6 +3,7 @@
 ## Currently Working On
 
 ## Recently Completed
+- [x] Added authorized transaction detail/category upsert for categorization drops.
 - [x] Seed default categories only for newly created Firebase accounts.
 - [x] Added idempotent default category initialization for new accounts.
 - [x] Moved category transaction work behind the transaction service and added category color updates.

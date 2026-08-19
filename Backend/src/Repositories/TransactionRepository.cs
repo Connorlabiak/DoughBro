@@ -61,10 +61,18 @@ namespace DoughBro.src.Repositories
             return snapshot.Documents.Select(doc => doc.ConvertTo<TransactionModel>());
         }
 
-        public async Task UpdateCategoryAsync(string userId, string transactionId, string category)
+        public async Task UpdateTransactionAsync(string userId, string transactionId, TransactionModel transaction)
         {
             DocumentReference docRef = _db.Collection("users").Document(userId).Collection("transactions").Document(transactionId);
-            await docRef.UpdateAsync("Category", category);
+            await docRef.SetAsync(new Dictionary<string, object?>
+            {
+                ["Name"] = transaction.Name,
+                ["Date"] = transaction.Date,
+                ["Amount"] = (double)transaction.Amount,
+                ["MerchantName"] = transaction.MerchantName,
+                ["Description"] = transaction.Description,
+                ["Category"] = transaction.Category,
+            }, SetOptions.MergeAll);
         }
 
         public async Task<IEnumerable<TransactionModel>> GetTransactionsByCategoryAsync(string userId, string categoryId)
