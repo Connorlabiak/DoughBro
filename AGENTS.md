@@ -12,7 +12,7 @@ A personal finance tracking app that syncs transactions via Plaid API and allows
 - **Web App:** React, TypeScript, Tailwind CSS / Shadcn UI.
 - **iOS APP** SwiftUI --> Future work only.
 - 
-## 4. General Output Rules for Codex (ALWAYS FOLLOW)
+## 3. General Output Rules for Codex (ALWAYS FOLLOW)
 - **Be Concise:** Provide code diffs or updated code snippets directly. Avoid lengthy text explanations unless asked.
 - **Preserve Conventions:** Strictly adhere to existing naming and structural patterns.
 - **Do Not Re-write Unchanged Code:** Insert changes instead of rewriting large sections.
@@ -20,11 +20,11 @@ A personal finance tracking app that syncs transactions via Plaid API and allows
 - **Be Secure:** API endpoints shuold be authorized unless explicitly allowed. The software should be secure for compliance with Plaid API.
 - **Build Verification Only:** The ONLY terminal/execution task Codex is permitted to run is verifying that the project compiles.
    - For Backend: `dotnet build`
-   - For Frontend: `npm.cmd run build`
+   - For Frontend: `npm.cmd run build:dev`
 - **NO Background Processes:** NEVER start, launch, or manage dev servers (`npm run dev`, `dotnet run`, `dotnet watch`, background jobs, or HTTP listeners).
 - **NO Execution Beyond Build:** Once `dotnet build` and `npm.cmd run build` pass successfully, immediately stop and hand control back to the user. Do not attempt to run or preview the app.
 
-## 5. Mandatory Pre-Execution Git Workflow (ALWAYS ENFORCE)
+## 4. Mandatory Pre-Execution Git Workflow (ALWAYS ENFORCE)
 Before modifying, creating, or deleting ANY files for a task:
 
 1. **Check Current Branch:** Run `git status` or inspect the working tree.
@@ -39,7 +39,7 @@ Before modifying, creating, or deleting ANY files for a task:
      `git commit -m "feat(module): short description of work completed"`
 5. **Update Status File:** Update the corresponding status file (`@.codex/backendStatus.md` or `@.codex/webStatus.md`) as part of the task branch's final commit.
 
-## 6. Automatic Context Dispatch Protocol (ALWAYS FOLLOW)
+## 5. Automatic Context Dispatch Protocol (ALWAYS FOLLOW)
 Do NOT wait for the user to explicitly tag context files. Automatically read and apply the following context rules based on the user's task or file paths:
 
 - **If the task touches C#, .NET, Web API, Controller, Service, Repository, or Firestore files (`/DoughBro/Backend`):**

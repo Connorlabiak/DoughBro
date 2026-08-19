@@ -125,5 +125,28 @@ namespace DoughBro.src.Services
         {
             await _transactionRepository.UpdateCategoryAsync(userId, transactionId, category);
         }
+
+        public async Task<IEnumerable<TransactionDto>> GetTransactionsByCategoryAsync(string userId, string categoryId)
+        {
+            IEnumerable<TransactionModel> transactions = await _transactionRepository.GetTransactionsByCategoryAsync(userId, categoryId);
+            return transactions.Select(transaction => new TransactionDto
+            {
+                Id = transaction.Id,
+                Origin = transaction.Origin,
+                UserId = transaction.UserId,
+                Name = transaction.Name,
+                Date = transaction.Date,
+                Amount = transaction.Amount,
+                Description = transaction.Description,
+                IsPending = transaction.IsPending,
+                MerchantName = transaction.MerchantName,
+                Category = transaction.Category,
+            });
+        }
+
+        public async Task ClearCategoryAsync(string userId, string categoryId)
+        {
+            await _transactionRepository.ClearCategoryAsync(userId, categoryId);
+        }
     }
 }

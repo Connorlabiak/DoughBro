@@ -1,0 +1,54 @@
+using DoughBro.src.Models;
+
+namespace DoughBro.src.Repositories.Interfaces
+{
+    public interface ICategoryRepository
+    {
+        /// <summary>
+        /// Gets categories for the authenticated user.
+        /// </summary>
+        /// <param name="userId">The authenticated Firebase user ID.</param>
+        /// <returns>The user's category models.</returns>
+        Task<IEnumerable<CategoryModel>> GetCategoriesAsync(string userId);
+
+        /// <summary>
+        /// Adds a category and reserves its color for the authenticated user.
+        /// </summary>
+        /// <param name="userId">The authenticated Firebase user ID.</param>
+        /// <param name="category">The category model to add.</param>
+        /// <returns>The saved category, or null if the color is already reserved.</returns>
+        Task<CategoryModel?> AddCategoryAsync(string userId, CategoryModel category);
+
+        /// <summary>
+        /// Adds the default categories for a user with no existing categories.
+        /// </summary>
+        /// <param name="userId">The authenticated Firebase user ID.</param>
+        /// <param name="categories">The default category models to add.</param>
+        /// <returns>True when the defaults were added; otherwise, false.</returns>
+        Task<bool> AddDefaultCategoriesAsync(string userId, IEnumerable<CategoryModel> categories);
+
+        /// <summary>
+        /// Updates a category for the authenticated user and reserves its selected color.
+        /// </summary>
+        /// <param name="userId">The authenticated Firebase user ID.</param>
+        /// <param name="categoryId">The category document ID.</param>
+        /// <param name="category">The updated category model.</param>
+        /// <returns>The updated category, or null if it does not exist.</returns>
+        Task<CategoryModel?> UpdateCategoryAsync(string userId, string categoryId, CategoryModel category);
+
+        /// <summary>
+        /// Deletes a category and releases its color for the authenticated user.
+        /// </summary>
+        /// <param name="userId">The authenticated Firebase user ID.</param>
+        /// <param name="categoryId">The category document ID.</param>
+        /// <returns>True when the category was deleted; otherwise, false.</returns>
+        Task<bool> DeleteCategoryAsync(string userId, string categoryId);
+
+        /// <summary>
+        /// Gets category color IDs already used by the authenticated user.
+        /// </summary>
+        /// <param name="userId">The authenticated Firebase user ID.</param>
+        /// <returns>The user's used category color IDs.</returns>
+        Task<ISet<string>> GetUsedCategoryColorIdsAsync(string userId);
+    }
+}

@@ -68,5 +68,18 @@ namespace DoughBro.src.Controllers
             return NoContent();
         }
 
+        [HttpGet("category/{categoryId}")]
+        public async Task<IActionResult> GetTransactionsByCategory(string categoryId)
+        {
+            string? userId = User.GetUserId();
+            if (userId is null)
+            {
+                return Unauthorized("User ID not found in claims");
+            }
+
+            IEnumerable<TransactionDto> transactions = await _transactionService.GetTransactionsByCategoryAsync(userId, categoryId);
+            return Ok(transactions);
+        }
+
     }
 }
