@@ -10,7 +10,7 @@
           "doughbro"
         ],
         "prod-site": [
-          "/Frontend/React/dist"
+          "Frontend/React/dist"
         ]
       }
     },

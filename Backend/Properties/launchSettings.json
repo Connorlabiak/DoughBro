@@ -7,7 +7,7 @@
         "ASPNETCORE_HTTP_PORTS": "8080",
         "ASPNETCORE_ENVIRONMENT": "Development",
         "Firebase__project_id": "doughbro",
-        "Plaid__ClientId": "68ba5624ed9295002480af09",
+        "Plaid__ClientId": "6a84f497c40624000e1c744c",
         "Plaid__Environment": "sandbox",
         "Plaid__Secret": "",
         "GOOGLE_APPLICATION_CREDENTIALS": "/app/secrets/doughbro-dev-key.json"
