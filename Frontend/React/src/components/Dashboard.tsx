@@ -167,7 +167,7 @@ export default function Dashboard() {
     };
 
     return (
-        <div className="min-h-screen bg-zinc-50 text-zinc-950">
+        <div className="min-h-screen bg-white text-zinc-950">
             <header className="flex items-center justify-between border-b border-zinc-200 bg-white px-6 py-4">
                 <div>
                     <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
@@ -176,15 +176,15 @@ export default function Dashboard() {
                     </p>
                 </div>
                 <div className="flex flex-wrap items-center justify-end gap-3">
-                    <Button variant="outline" onClick={() => navigate("/categories")}>Categories</Button>
+                    <Button variant="outline" className="border-[#BF00FF] text-[#BF00FF] hover:bg-[#BF00FF]/10 hover:text-[#BF00FF]" onClick={() => navigate("/categories")}>Categories</Button>
                     <PlaidLinkButton />
                     <SyncTransactionsButton onSyncCompleteCallback={loadDashboardData} />
-                    <Button variant="outline" onClick={() => logout()}>Logout</Button>
+                    <Button variant="outline" className="border-[#BF00FF] text-[#BF00FF] hover:bg-[#BF00FF]/10 hover:text-[#BF00FF]" onClick={() => logout()}>Logout</Button>
                 </div>
             </header>
 
             <main className="grid min-h-[calc(100vh-81px)] grid-cols-1 gap-6 p-6 xl:grid-cols-[minmax(320px,420px)_1fr]">
-                <section className="flex min-h-[360px] flex-col justify-center border border-zinc-200 bg-white p-5 shadow-sm">
+                <section className="flex min-h-[360px] flex-col justify-center border border-zinc-200 bg-white p-5">
                     <div className="mb-5 flex items-center justify-between">
                         <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">Next Transaction</h2>
                         {isUpdating && <span className="text-xs font-medium uppercase tracking-wide text-zinc-500">Saving</span>}
@@ -208,20 +208,20 @@ export default function Dashboard() {
                                         value={transactionDraft.merchantName}
                                         placeholder="Merchant"
                                         onChange={(event) => setTransactionDraft((current) => current && { ...current, merchantName: event.target.value })}
-                                        className="h-auto truncate border-zinc-600 text-xl font-semibold text-white placeholder:text-zinc-400 focus-visible:border-zinc-300"
+                                        className="h-auto truncate border-transparent text-xl font-semibold text-white placeholder:text-zinc-400 focus-visible:border-white"
                                     />
                                     <Input
                                         aria-label="Transaction name"
                                         value={transactionDraft.name}
                                         onChange={(event) => setTransactionDraft((current) => current && { ...current, name: event.target.value })}
-                                        className="mt-2 h-auto border-zinc-700 text-sm text-zinc-300 focus-visible:border-zinc-300"
+                                        className="mt-2 h-auto border-transparent text-sm text-zinc-300 focus-visible:border-white"
                                     />
                                     <Input
                                         aria-label="Description"
                                         value={transactionDraft.description}
                                         placeholder="Click to add description"
                                         onChange={(event) => setTransactionDraft((current) => current && { ...current, description: event.target.value })}
-                                        className="mt-2 h-auto border-zinc-700 text-sm text-zinc-300 placeholder:text-zinc-500 focus-visible:border-zinc-300"
+                                        className="mt-2 h-auto border-transparent text-sm text-zinc-300 placeholder:text-zinc-500 focus-visible:border-white"
                                     />
                                 </div>
                                 <div className="flex shrink-0 items-center gap-1 text-xl font-semibold">
@@ -234,7 +234,7 @@ export default function Dashboard() {
                                         step="0.01"
                                         value={transactionDraft.amount}
                                         onChange={(event) => setTransactionDraft((current) => current && { ...current, amount: event.target.value })}
-                                        className="h-auto w-28 border-zinc-600 text-right text-xl font-semibold text-white focus-visible:border-zinc-300"
+                                        className="h-auto w-28 border-transparent text-right text-xl font-semibold text-white focus-visible:border-white"
                                     />
                                 </div>
                             </div>
@@ -243,11 +243,11 @@ export default function Dashboard() {
                                 type="date"
                                 value={transactionDraft.date}
                                 onChange={(event) => setTransactionDraft((current) => current && { ...current, date: event.target.value })}
-                                className="h-auto w-auto border-zinc-700 text-sm font-medium text-zinc-300 [color-scheme:dark] focus-visible:border-zinc-300"
+                                className="h-auto w-auto border-transparent text-sm font-medium text-zinc-300 [color-scheme:dark] focus-visible:border-white"
                             />
                         </div>
                     ) : (
-                        <div className="border border-dashed border-emerald-300 bg-emerald-50 p-6 text-center text-sm font-medium text-emerald-700">
+                        <div className="border border-dashed border-zinc-300 bg-zinc-50 p-6 text-center text-sm font-medium text-zinc-700">
                             All visible transactions are categorized.
                         </div>
                     )}
@@ -269,12 +269,12 @@ export default function Dashboard() {
                                 onDrop={(event) => handleDrop(event, category)}
                                 onClick={() => setSelectedCategory(category)}
                                 className={cn(
-                                    "flex min-h-36 cursor-pointer items-center justify-center border-2 p-4 text-center shadow-sm",
+                                    "relative flex min-h-36 cursor-pointer items-center justify-center overflow-hidden border border-zinc-200 bg-white p-4 text-center",
                                     "transition-all duration-150 ease-out will-change-transform",
-                                    colorClasses.card,
-                                    isHovered ? "z-10 scale-[1.06] shadow-2xl" : "hover:scale-[1.02] hover:shadow-lg",
+                                    isHovered ? "z-10 scale-[1.04] border-zinc-950 shadow-xl" : "hover:scale-[1.02] hover:shadow-md",
                                 )}
                             >
+                                <span className={cn("absolute inset-x-0 top-0 h-1", colorClasses.accent)} />
                                 <span className="text-lg font-bold text-zinc-950">{category.name}</span>
                             </div>
                         );
@@ -287,7 +287,7 @@ export default function Dashboard() {
                     type="button"
                     aria-label={categoryPage === 0 ? "Show more categories" : "Show previous categories"}
                     onClick={() => setCategoryPage((currentPage) => currentPage === 0 ? 1 : 0)}
-                    className="fixed bottom-6 right-6 z-40 h-14 rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 px-6 text-sm text-white shadow-xl shadow-fuchsia-500/40 transition-all duration-200 hover:scale-105 hover:from-violet-500 hover:to-fuchsia-400"
+                    className="fixed bottom-6 right-6 z-40 h-14 rounded-full bg-[#BF00FF] px-6 text-sm text-white shadow-xl shadow-[#BF00FF]/25 transition-all duration-200 hover:scale-105 hover:bg-[#9C00CF]"
                 >
                     <span>{categoryPage === 0 ? "More Categories" : "Back to Categories"}</span>
                     <span className="text-xl leading-none" aria-hidden="true">{categoryPage === 0 ? "→" : "←"}</span>

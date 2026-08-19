@@ -33,7 +33,8 @@ export function SyncTransactionsButton({ onSyncCompleteCallback }: SyncTransacti
         <Button
             onClick={handleSyncClick}
             disabled={isPending}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-medium"
+            variant="outline"
+            className="border-[#BF00FF] bg-white font-medium text-[#BF00FF] hover:bg-[#BF00FF]/10 hover:text-[#BF00FF]"
         >
             {isPending ? "Syncing Ledger..." : "Sync Transactions"}
         </Button>

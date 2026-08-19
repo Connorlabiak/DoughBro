@@ -3,6 +3,7 @@
 ## Currently Working On
 
 ## Recently Completed
+- [x] Standardized the dashboard around a minimalist white, black, and purple accent palette.
 - [x] Added local transaction card editing with deferred persistence on category drop.
 - [x] Seed default categories at account creation and improved dashboard category paging controls.
 - [x] Added default category initialization and dashboard category paging.

@@ -76,7 +76,8 @@ export function PlaidLinkButton({ onSuccessCallback }: PlaidLinkButtonProps) {
         <Button
             onClick={handleClick}
             disabled={isPending || (!!linkToken && !ready)}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium"
+            variant="outline"
+            className="border-[#BF00FF] bg-white font-medium text-[#BF00FF] hover:bg-[#BF00FF]/10 hover:text-[#BF00FF]"
         >
             {isPending ? "Connecting..." : "Link Bank Account"}
         </Button>
