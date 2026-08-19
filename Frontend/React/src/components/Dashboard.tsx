@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/ui/date-picker"
 import { signOut } from "firebase/auth";
 import { auth } from "@/firebase/firebase";
 import { PlaidLinkButton } from "@/components/PlaidLinkButton";
@@ -191,9 +192,8 @@ export default function Dashboard() {
                 <section className="relative min-h-[360px] border border-zinc-200 bg-white p-5">
                     <div className="mb-5 flex items-center justify-between">
                         <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">Next Transaction</h2>
-                        {isUpdating && <span className="text-xs font-medium uppercase tracking-wide text-zinc-500">Saving</span>}
+                        {isUpdating && <span className="text-xs font-medium uppercase tracking-wide text-[#BF00FF]">Saving</span>}
                     </div>
-
                     {isLoading ? (
                         <div className="border border-dashed border-zinc-300 p-6 text-center text-sm text-zinc-500">
                             Loading transactions...
@@ -203,61 +203,67 @@ export default function Dashboard() {
                             draggable={!isUpdating}
                             onDragStart={(event) => handleDragStart(event, activeTransaction.id)}
                             onDragEnd={handleDragEnd}
-                            className="w-full max-w-md cursor-grab border border-zinc-300 bg-zinc-950 p-5 text-white shadow-lg transition duration-150 ease-out active:scale-[0.99] active:cursor-grabbing active:opacity-95"
+                            className="w-full max-w-md cursor-grab border-2 border-[#BF00FF]/30 bg-white p-4 shadow-md transition duration-150 ease-out hover:bg-[#BF00FF]/10 hover:border-[#BF00FF] active:scale-[0.99] active:cursor-grabbing active:opacity-95"
                         >
-                            <div className="mb-8 flex items-start justify-between gap-4">
-                                <div className="min-w-0">
+                            <div className="flex items-start justify-between gap-3">
+                                <div className="min-w-0 flex-1 space-y-0.5">
                                     <Input
                                         aria-label="Merchant"
+                                        title={transactionDraft.merchantName}
                                         value={transactionDraft.merchantName}
                                         placeholder="Merchant"
                                         onChange={(event) => setTransactionDraft((current) => current && { ...current, merchantName: event.target.value })}
-                                        className="h-auto truncate border-transparent text-xl font-semibold text-white placeholder:text-zinc-400 focus-visible:border-white md:text-xl"
+                                        className="h-auto w-full min-w-0 truncate border-transparent bg-transparent p-0 text-lg font-bold text-zinc-900 placeholder:text-zinc-400 focus-visible:border-[#BF00FF] focus-visible:ring-0 md:text-lg"
                                     />
                                     <Input
                                         aria-label="Transaction name"
                                         value={transactionDraft.name}
                                         onChange={(event) => setTransactionDraft((current) => current && { ...current, name: event.target.value })}
-                                        className="mt-2 h-auto border-transparent text-sm text-zinc-300 focus-visible:border-white"
+                                        className="h-auto p-0 border-transparent bg-transparent text-xs font-medium text-zinc-800 focus-visible:border-[#BF00FF] focus-visible:ring-0"
                                     />
                                     <Input
                                         aria-label="Description"
                                         value={transactionDraft.description}
                                         placeholder="Click to add description"
                                         onChange={(event) => setTransactionDraft((current) => current && { ...current, description: event.target.value })}
-                                        className="mt-2 h-auto border-transparent text-sm text-zinc-300 placeholder:text-zinc-500 focus-visible:border-white"
+                                        className="h-auto p-0 border-transparent bg-transparent text-xs text-zinc-700 placeholder:text-zinc-600 focus-visible:border-[#BF00FF] focus-visible:ring-0"
                                     />
                                 </div>
-                                <div className="flex shrink-0 items-center text-xl font-semibold">
-                                    <span aria-hidden="true">$</span>
-                                    <Input
-                                        aria-label="Amount"
-                                        type="number"
-                                        inputMode="decimal"
-                                        min="0"
-                                        step="0.01"
-                                        value={transactionDraft.amount}
-                                        onChange={(event) => setTransactionDraft((current) => current && { ...current, amount: event.target.value })}
-                                        className="h-auto w-20 border-transparent text-left text-xl font-semibold text-white focus-visible:border-white md:text-xl"
-                                    />
-                                </div>
+                                    <div className="flex shrink-0 items-center rounded-md bg-[#BF00FF]/10 px-2 py-1 text-base font-bold text-[#BF00FF] md:text-lg">
+                                        <span aria-hidden="true" className="mr-0.5">$</span>
+                                        <Input
+                                            aria-label="Amount"
+                                            type="text"
+                                            inputMode="decimal"
+                                            maxLength={12}
+                                            value={transactionDraft.amount}
+                                            onChange={(event) => {
+                                                const val = event.target.value;
+                                                if (/^-?\d{0,9}(\.\d{0,2})?$/.test(val) || val === "") {
+                                                    setTransactionDraft((current) => current && { ...current, amount: val });
+                                                }
+                                            }}
+                                            style={{ width: `${Math.max(transactionDraft.amount.toString().length, 3)}ch` }}
+                                            className="h-auto p-0 border-transparent bg-transparent text-left text-base font-bold text-[#BF00FF] focus-visible:border-[#BF00FF] focus-visible:ring-0 md:text-lg"
+                                        />
+                                    </div>
                             </div>
-                            <Input
-                                aria-label="Transaction date"
-                                type="date"
-                                value={transactionDraft.date}
-                                onChange={(event) => setTransactionDraft((current) => current && { ...current, date: event.target.value })}
-                                className="h-auto w-auto border-transparent text-sm font-medium text-zinc-300 [color-scheme:dark] focus-visible:border-white"
-                            />
+
+                            <div className="mt-3 border-t border-zinc-100 pt-2">
+                                <DatePicker
+                                    value={transactionDraft.date}
+                                    onChange={(newDate) =>
+                                        setTransactionDraft((current) => current && { ...current, date: newDate })
+                                    }
+                                />
+                            </div>
                         </div>
                     ) : (
                         <div className="border border-dashed border-zinc-300 bg-zinc-50 p-6 text-center text-sm font-medium text-zinc-700">
                             All visible transactions are categorized.
                         </div>
                     )}
-
                     {error && <p className="mt-4 text-sm font-medium text-red-600">{error}</p>}
-
                     {hiddenCategory && (
                         <div
                             onDragEnter={() => setHoveredCategoryId(hiddenCategory.id)}
@@ -265,8 +271,8 @@ export default function Dashboard() {
                             onDragLeave={(event) => handleDragLeave(event, hiddenCategory.id)}
                             onDrop={(event) => handleDrop(event, hiddenCategory)}
                             className={cn(
-                                "absolute inset-x-0 bottom-5 flex flex-col items-center justify-center text-zinc-400 transition-all duration-150 ease-out",
-                                hoveredCategoryId === hiddenCategory.id ? "scale-110 text-zinc-950" : "hover:scale-105 hover:text-zinc-700",
+                                "absolute left-1/2 bottom-[16.6%] -translate-x-1/2 translate-y-1/2 flex flex-col items-center justify-center text-zinc-400 transition-all duration-150 ease-out",
+                                hoveredCategoryId === hiddenCategory.id ? "scale-110 text-[#BF00FF]" : "hover:scale-105 hover:text-[#BF00FF]",
                             )}
                         >
                             <RiEyeOffLine className="size-14" aria-hidden="true" />
